@@ -6,9 +6,10 @@ Author: Niek Tax
 '''
 
 from __future__ import division
+import sys
 import unicodecsv
 
-eventlog = "helpdesk.csv"
+eventlog = str(sys.argv[1]).split("/")[-1]
 csvfile = open('output_files/results/suffix_and_remaining_time_%s' % eventlog, 'r')
 r = unicodecsv.reader(csvfile ,encoding='utf-8')
 r.next() # header

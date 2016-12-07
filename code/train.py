@@ -43,9 +43,9 @@ times2 = []
 numlines = 0
 casestarttime = None
 lasteventtime = None
-eventlog = "helpdesk.csv"
+eventlog = str(sys.argv[1]).split("/")[-1]
 
-csvfile = open('../data/%s' % eventlog, 'r')
+csvfile = open('%s' % sys.argv[1], 'r')
 spamreader = csv.reader(csvfile, delimiter=',', quotechar='|')
 next(spamreader, None)  # skip the headers
 ascii_offset = 161
@@ -122,7 +122,7 @@ target_indices_char = dict((i, c) for i, c in enumerate(target_chars))
 print(indices_char)
 
 
-csvfile = open('../data/%s' % eventlog, 'r')
+csvfile = open('%s' % sys.argv[1], 'r')
 spamreader = csv.reader(csvfile, delimiter=',', quotechar='|')
 next(spamreader, None)  # skip the headers
 lastcase = ''

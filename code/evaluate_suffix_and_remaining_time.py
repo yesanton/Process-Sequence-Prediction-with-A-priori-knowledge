@@ -11,9 +11,10 @@ from keras.models import load_model
 import csv
 import copy
 import numpy as np
+import sys
 import distance
 from itertools import izip
-from damerau_levenshtein import my_damerau_levenshtein_distance
+from jellyfish._jellyfish import damerau_levenshtein_distance
 import unicodecsv
 from sklearn import metrics
 from math import sqrt
@@ -22,37 +23,11 @@ from datetime import datetime, timedelta
 import matplotlib.pyplot as plt
 from collections import Counter
 
-eventlog = "helpdesk.csv"
-csvfile = open('../data/%s' % eventlog, 'r')
+eventlog = str(sys.argv[1]).split("/")[-1]
+csvfile = open('%s' % sys.argv[1], 'r')
 spamreader = csv.reader(csvfile, delimiter=',', quotechar='|')
 next(spamreader, None)  # skip the headers
 ascii_offset = 161
-
-def my_damerau_levenshtein_distance(s1, s2):
-    """Compute the Damerau-Levenshtein distance between two given strings (lists of elements)"""
-    d = {}
-    str_len1 = len(s1)
-    str_len2 = len(s2)
-    for i in range(-1, str_len1+1):
-        d[(i, -1)] = i+1
-    for j in range(-1, str_len2+1):
-        d[(-1, j)] = j+1
-
-    for i in range(str_len1):
-        for j in range(str_len2):
-            if s1[i] == s2[j]:
-                cost = 0
-            else:
-                cost = 1
-            d[(i, j)] = min(
-                           d[(i-1, j)] + 1,  # deletion
-                           d[(i, j-1)] + 1,  # insertion
-                           d[(i-1, j-1)] + cost,  # substitution
-                          )
-            if i and j and s1[i] == s2[j-1] and s1[i-1] == s2[j]:
-                d[(i, j)] = min(d[(i, j)], d[i-2, j-2] + cost)  # transposition
-    return d[str_len1-1, str_len2-1]
-
 
 lastcase = ''
 line = ''
@@ -148,7 +123,7 @@ times3 = []
 numlines = 0
 casestarttime = None
 lasteventtime = None
-csvfile = open('../data/%s' % eventlog, 'r')
+csvfile = open('%s' % sys.argv[1], 'r')
 spamreader = csv.reader(csvfile, delimiter=',', quotechar='|')
 next(spamreader, None)  # skip the headers
 for row in spamreader:
@@ -289,7 +264,7 @@ with open('output_files/results/suffix_and_remaining_time_%s' % eventlog, 'wb') 
                 output.append(unicode(ground_truth).encode("utf-8"))
                 output.append(unicode(predicted).encode("utf-8"))
                 output.append(1 - distance.nlevenshtein(predicted, ground_truth))
-                dls = 1 - (my_damerau_levenshtein_distance(unicode(predicted), unicode(ground_truth)) / max(len(predicted),len(ground_truth)))
+                dls = 1 - (damerau_levenshtein_distance(unicode(predicted), unicode(ground_truth)) / max(len(predicted),len(ground_truth)))
                 if dls<0:
                     dls=0 # we encountered problems with Damerau-Levenshtein Similarity on some linux machines where the default character encoding of the operating system caused it to be negative, this should never be the case
                 output.append(dls)

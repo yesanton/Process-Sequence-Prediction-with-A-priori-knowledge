@@ -11,9 +11,10 @@ from keras.models import load_model
 import csv
 import copy
 import numpy as np
+import sys
 import distance
 from itertools import izip
-from damerau_levenshtein import my_damerau_levenshtein_distance
+from jellyfish._jellyfish import damerau_levenshtein_distance
 import unicodecsv
 from sklearn import metrics
 from math import sqrt
@@ -22,8 +23,8 @@ from datetime import datetime, timedelta
 import matplotlib.pyplot as plt
 from collections import Counter
 
-eventlog = "helpdesk.csv"
-csvfile = open('../data/%s' % eventlog, 'r')
+eventlog = str(sys.argv[1]).split("/")[-1]
+csvfile = open('%s' % sys.argv[1], 'r')
 spamreader = csv.reader(csvfile, delimiter=',', quotechar='|')
 next(spamreader, None)  # skip the headers
 ascii_offset = 161
@@ -119,7 +120,7 @@ times3 = []
 numlines = 0
 casestarttime = None
 lasteventtime = None
-csvfile = open('../data/%s' % eventlog, 'r')
+csvfile = open('%s' % sys.argv[1], 'r')
 spamreader = csv.reader(csvfile, delimiter=',', quotechar='|')
 next(spamreader, None)  # skip the headers
 for row in spamreader:
@@ -270,7 +271,7 @@ with open('output_files/results/next_activity_and_time_%s' % eventlog, 'wb') as 
                 output.append(unicode(ground_truth).encode("utf-8"))
                 output.append(unicode(predicted).encode("utf-8"))
                 output.append(1 - distance.nlevenshtein(predicted, ground_truth))
-                dls = 1 - (my_damerau_levenshtein_distance(unicode(predicted), unicode(ground_truth)) / max(len(predicted),len(ground_truth)))
+                dls = 1 - (damerau_levenshtein_distance(unicode(predicted), unicode(ground_truth)) / max(len(predicted),len(ground_truth)))
                 if dls<0:
                     dls=0 # we encountered problems with Damerau-Levenshtein Similarity on some linux machines where the default character encoding of the operating system caused it to be negative, this should never be the case
                 output.append(dls)
