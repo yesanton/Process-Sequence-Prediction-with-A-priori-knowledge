@@ -178,6 +178,8 @@ predict_size = maxlen
 model = load_model('output_files/models/model_89-1.50.h5')
 
 # define helper functions
+
+#this one encodes the current sentence into the onehot encoding
 def encode(sentence, times, times3, maxlen=maxlen):
     num_features = len(chars)+5
     X = np.zeros((1, maxlen, num_features), dtype=np.float32)
@@ -222,28 +224,29 @@ three_ahead_pred = []
 with open('output_files/results/suffix_and_remaining_time_%s' % eventlog, 'wb') as csvfile:
     spamwriter = csv.writer(csvfile, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
     spamwriter.writerow(["Prefix length", "Groud truth", "Predicted", "Levenshtein", "Damerau", "Jaccard", "Ground truth times", "Predicted times", "RMSE", "MAE", "Median AE"])
-    for prefix_size in range(2,maxlen):
+    for prefix_size in range(2,maxlen): # you can change first parameter to any prefix size, for experimenting with predictions
         print(prefix_size)
         for line, times, times2, times3 in izip(lines, lines_t, lines_t2, lines_t3):
             times.append(0)
+            #here we cut the lines for specific prefix size, in order to get prediction of suffix.
             cropped_line = ''.join(line[:prefix_size])
             cropped_times = times[:prefix_size]
             cropped_times3 = times3[:prefix_size]
             if len(times2)<prefix_size:
                 continue # make no prediction for this case, since this case has ended already
-            ground_truth = ''.join(line[prefix_size:prefix_size+predict_size])
-            ground_truth_t = times2[prefix_size-1]
+            ground_truth = ''.join(line[prefix_size:prefix_size+predict_size])  #here we cut to get second part of the string (suffix)
+            ground_truth_t = times2[prefix_size-1] #here we extract the last time (needed to get the time to completion)
             case_end_time = times2[len(times2)-1]
-            ground_truth_t = case_end_time-ground_truth_t
+            ground_truth_t = case_end_time-ground_truth_t #and here we extract time to completion
             predicted = ''
             total_predicted_time = 0
             for i in range(predict_size):
                 enc = encode(cropped_line, cropped_times, cropped_times3)
                 y = model.predict(enc, verbose=0) # make predictions
                 # split predictions into seperate activity and time predictions
-                y_char = y[0][0] 
+                y_char = y[0][0]
                 y_t = y[1][0][0]
-                prediction = getSymbol(y_char) # undo one-hot encoding           
+                prediction = getSymbol(y_char) # undo one-hot encoding
                 cropped_line += prediction
                 if y_t<0:
                     y_t=0
@@ -258,7 +261,7 @@ with open('output_files/results/suffix_and_remaining_time_%s' % eventlog, 'wb') 
                 total_predicted_time = total_predicted_time + y_t
                 predicted += prediction
             output = []
-            if len(ground_truth)>0:
+            if len(ground_truth)>0: #now here are checks for how our model performed
                 output.append(prefix_size)
                 output.append(unicode(ground_truth).encode("utf-8"))
                 output.append(unicode(predicted).encode("utf-8"))
