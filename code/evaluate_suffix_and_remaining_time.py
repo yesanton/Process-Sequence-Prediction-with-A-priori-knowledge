@@ -32,87 +32,6 @@ lastcase = ''
 line = ''
 firstLine = True
 lines = []
-timeseqs = []
-timeseqs2 = []
-times = []
-times2 = []
-numlines = 0
-casestarttime = None
-lasteventtime = None
-for row in spamreader:
-    t = time.strptime(row[2], "%Y-%m-%d %H:%M:%S")
-    if row[0]!=lastcase:
-        casestarttime = t
-        lasteventtime = t
-        lastcase = row[0]
-        if not firstLine:        
-            lines.append(line)
-            timeseqs.append(times)
-            timeseqs2.append(times2)
-        line = ''
-        times = []
-        times2 = []
-        numlines+=1
-    line+=unichr(int(row[1])+ascii_offset)
-    timesincelastevent = datetime.fromtimestamp(time.mktime(t))-datetime.fromtimestamp(time.mktime(lasteventtime))
-    timesincecasestart = datetime.fromtimestamp(time.mktime(t))-datetime.fromtimestamp(time.mktime(casestarttime))
-    timediff = 86400 * timesincelastevent.days + timesincelastevent.seconds
-    timediff2 = 86400 * timesincecasestart.days + timesincecasestart.seconds
-    times.append(timediff)
-    times2.append(timediff2)
-    lasteventtime = t
-    firstLine = False
-
-# add last case
-lines.append(line)
-timeseqs.append(times)
-timeseqs2.append(times2)
-numlines+=1
-
-divisor = np.mean([item for sublist in timeseqs for item in sublist])
-print('divisor: {}'.format(divisor))
-divisor2 = np.mean([item for sublist in timeseqs2 for item in sublist])
-print('divisor2: {}'.format(divisor2))
-divisor3 = np.mean(map(lambda x: np.mean(map(lambda y: x[len(x)-1]-y, x)), timeseqs2))
-print('divisor3: {}'.format(divisor3))
-
-elems_per_fold = int(round(numlines/3))
-fold1 = lines[:elems_per_fold]
-fold1_t = timeseqs[:elems_per_fold]
-fold1_t2 = timeseqs2[:elems_per_fold]
-
-fold2 = lines[elems_per_fold:2*elems_per_fold]
-fold2_t = timeseqs[elems_per_fold:2*elems_per_fold]
-fold2_t2 = timeseqs2[elems_per_fold:2*elems_per_fold]
-
-lines = fold1 + fold2
-lines_t = fold1_t + fold2_t
-lines_t2 = fold1_t2 + fold2_t2
-
-step = 1
-sentences = []
-softness = 0
-next_chars = []
-lines = map(lambda x: x+'!',lines)
-maxlen = max(map(lambda x: len(x),lines))
-
-chars = map(lambda x : set(x),lines)
-chars = list(set().union(*chars))
-chars.sort()
-target_chars = copy.copy(chars)
-chars.remove('!')
-print('total chars: {}, target chars: {}'.format(len(chars), len(target_chars)))
-char_indices = dict((c, i) for i, c in enumerate(chars))
-indices_char = dict((i, c) for i, c in enumerate(chars))
-target_char_indices = dict((c, i) for i, c in enumerate(target_chars))
-target_indices_char = dict((i, c) for i, c in enumerate(target_chars))
-print(indices_char)
-
-
-lastcase = ''
-line = ''
-firstLine = True
-lines = []
 timeseqs = []  # relative time since previous event
 timeseqs2 = [] # relative time since case start
 timeseqs3 = [] # absolute time of previous event
@@ -160,6 +79,38 @@ timeseqs.append(times)
 timeseqs2.append(times2)
 timeseqs3.append(times3)
 numlines+=1
+
+divisor = np.mean([item for sublist in timeseqs for item in sublist])
+print('divisor: {}'.format(divisor))
+divisor2 = np.mean([item for sublist in timeseqs2 for item in sublist])
+print('divisor2: {}'.format(divisor2))
+divisor3 = np.mean(map(lambda x: np.mean(map(lambda y: x[len(x)-1]-y, x)), timeseqs2))
+print('divisor3: {}'.format(divisor3))
+
+elems_per_fold = int(round(numlines/3))
+
+fold1and2lines = lines[:2*elems_per_fold]
+
+step = 1
+sentences = []
+softness = 0
+next_chars = []
+fold1and2lines = map(lambda x: x+'!',fold1and2lines)
+maxlen = max(map(lambda x: len(x),fold1and2lines))
+
+chars = map(lambda x : set(x),fold1and2lines)
+chars = list(set().union(*chars))
+chars.sort()
+target_chars = copy.copy(chars)
+chars.remove('!')
+print('total chars: {}, target chars: {}'.format(len(chars), len(target_chars)))
+char_indices = dict((c, i) for i, c in enumerate(chars))
+indices_char = dict((i, c) for i, c in enumerate(chars))
+target_char_indices = dict((c, i) for i, c in enumerate(target_chars))
+target_indices_char = dict((i, c) for i, c in enumerate(target_chars))
+print(indices_char)
+
+#we only need the third fold, because first two were used for training
 
 fold3 = lines[2*elems_per_fold:]
 fold3_t = timeseqs[2*elems_per_fold:]
@@ -221,7 +172,7 @@ three_ahead_pred = []
 
 
 # make predictions
-with open('output_files/results/suffix_and_remaining_time_%s' % eventlog, 'wb') as csvfile:
+with open('output_files/results/suffix_and_remaining_time1_%s' % eventlog, 'wb') as csvfile:
     spamwriter = csv.writer(csvfile, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
     spamwriter.writerow(["Prefix length", "Groud truth", "Predicted", "Levenshtein", "Damerau", "Jaccard", "Ground truth times", "Predicted times", "RMSE", "MAE", "Median AE"])
     for prefix_size in range(2,maxlen): # you can change first parameter to any prefix size, for experimenting with predictions
