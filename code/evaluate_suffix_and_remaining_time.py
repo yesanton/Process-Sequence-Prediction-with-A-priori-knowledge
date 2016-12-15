@@ -150,16 +150,10 @@ def encode(sentence, times, times3, maxlen=maxlen):
         X[0, t+leftpad, len(chars)+4] = times3[t].weekday()/7
     return X
 
-def getSymbol(predictions):
-    maxPrediction = 0
-    symbol = ''
-    i = 0;
-    for prediction in predictions:
-        if(prediction>=maxPrediction):
-            maxPrediction = prediction
-            symbol = target_indices_char[i]
-        i += 1
-    return symbol
+#modify to be able to get second best prediction
+def getSymbol(predictions, ith_best = 1):
+    i = np.argsort(predictions)[len(predictions) - ith_best]
+    return target_indices_char[i]
 
 one_ahead_gt = []
 one_ahead_pred = []
@@ -172,7 +166,7 @@ three_ahead_pred = []
 
 
 # make predictions
-with open('output_files/results/suffix_and_remaining_time1_%s' % eventlog, 'wb') as csvfile:
+with open('output_files/results/suffix_and_remaining_time2_%s' % eventlog, 'wb') as csvfile:
     spamwriter = csv.writer(csvfile, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
     spamwriter.writerow(["Prefix length", "Groud truth", "Predicted", "Levenshtein", "Damerau", "Jaccard", "Ground truth times", "Predicted times", "RMSE", "MAE", "Median AE"])
     for prefix_size in range(2,maxlen): # you can change first parameter to any prefix size, for experimenting with predictions
@@ -197,7 +191,7 @@ with open('output_files/results/suffix_and_remaining_time1_%s' % eventlog, 'wb')
                 # split predictions into seperate activity and time predictions
                 y_char = y[0][0]
                 y_t = y[1][0][0]
-                prediction = getSymbol(y_char) # undo one-hot encoding
+                prediction = getSymbol(y_char)  # undo one-hot encoding
                 cropped_line += prediction
                 if y_t<0:
                     y_t=0
