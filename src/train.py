@@ -37,7 +37,7 @@ eventlog = "helpdesk.csv"
 
 ########################################################################################
 #
-# this part of the code opens the file, reads it into three following variables
+# this part of the src opens the file, reads it into three following variables
 #
 
 lines = [] #these are all the activity seq

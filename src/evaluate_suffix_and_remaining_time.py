@@ -22,6 +22,8 @@ from datetime import datetime, timedelta
 import matplotlib.pyplot as plt
 from collections import Counter
 
+from src.formula_verificator import verify_formula
+
 eventlog = "helpdesk.csv"
 csvfile = open('../data/%s' % eventlog, 'r')
 spamreader = csv.reader(csvfile, delimiter=',', quotechar='|')
@@ -199,6 +201,15 @@ with open('output_files/results/suffix_and_remaining_time2_%s' % eventlog, 'wb')
                 if prediction == '!': # end of case was just predicted, therefore, stop predicting further into the future
                     one_ahead_pred.append(total_predicted_time)
                     one_ahead_gt.append(ground_truth_t)
+
+                    ################## experimentation
+
+                    print verify_formula(predicted)
+                    #predicted
+
+                    ##################################
+
+
                     print('! predicted, end case')
                     break
                 y_t = y_t * divisor3
