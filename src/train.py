@@ -31,7 +31,7 @@ import time
 from itertools import izip
 from datetime import datetime
 from math import log
-
+from shared_variables import getUnicode_fromInt
 
 eventlog = "helpdesk.csv"
 
@@ -58,7 +58,6 @@ lasteventtime = None
 csvfile = open('../data/%s' % eventlog, 'r')
 spamreader = csv.reader(csvfile, delimiter=',', quotechar='|')
 next(spamreader, None)  # skip the headers
-ascii_offset = 161
 
 for row in spamreader: #the rows are "CaseID,ActivityID,CompleteTimestamp"
     t = time.strptime(row[2], "%Y-%m-%d %H:%M:%S") #creates a datetime object from row[2]
@@ -74,7 +73,7 @@ for row in spamreader: #the rows are "CaseID,ActivityID,CompleteTimestamp"
         times = []
         times2 = []
         numlines+=1
-    line+=unichr(int(row[1])+ascii_offset)
+    line+=getUnicode_fromInt(row[1])
     timesincelastevent = datetime.fromtimestamp(time.mktime(t))-datetime.fromtimestamp(time.mktime(lasteventtime))
     timesincecasestart = datetime.fromtimestamp(time.mktime(t))-datetime.fromtimestamp(time.mktime(casestarttime))
     timediff = 86400 * timesincelastevent.days + timesincelastevent.seconds
@@ -180,7 +179,7 @@ for row in spamreader:
         times3 = []
         times4 = []
         numlines+=1
-    line+=unichr(int(row[1])+ascii_offset)
+    line+=getUnicode_fromInt(row[1])
     timesincelastevent = datetime.fromtimestamp(time.mktime(t))-datetime.fromtimestamp(time.mktime(lasteventtime))
     timesincecasestart = datetime.fromtimestamp(time.mktime(t))-datetime.fromtimestamp(time.mktime(casestarttime))
     midnight = datetime.fromtimestamp(time.mktime(t)).replace(hour=0, minute=0, second=0, microsecond=0)

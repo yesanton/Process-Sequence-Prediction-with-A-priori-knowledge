@@ -23,6 +23,7 @@
 #
 
 from py4j.java_gateway import JavaGateway
+from shared_variables import getInt_fromUnicode
 gateway = JavaGateway()                   # connect to the JVM
 random = gateway.jvm.java.util.Random()   # create a java.util.Random instance
 number1 = random.nextInt(10)              # call the Random.nextInt method
@@ -35,8 +36,15 @@ print verificator_app.mama(10)
 
 formula = "(  <>(\"tumor marker CA-19.9\") ) \\/ ( <> (\"ca-125 using meia\") )  "
 
+
+formula_help_desk1 = "( <>(\"6\") ) "
+formula_help_desk2 = "( <>(\"2\") /\  ( <>(\"6\") ) "
+
 def verify_formula(trace):
-    return verificator_app.isTraceViolated(formula,trace)
+    trace_new = ""
+    for i in range(len(trace)):
+        trace_new += str(getInt_fromUnicode(trace[i]))
+    return verificator_app.isTraceViolated(formula_help_desk2,trace_new)
 
 
 #print verify_formula("aaa")

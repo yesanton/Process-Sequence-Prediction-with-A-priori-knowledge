@@ -22,11 +22,12 @@ from datetime import datetime, timedelta
 import matplotlib.pyplot as plt
 from collections import Counter
 
+from src.shared_variables import getUnicode_fromInt
+
 eventlog = "helpdesk.csv"
 csvfile = open('../data/%s' % eventlog, 'r')
 spamreader = csv.reader(csvfile, delimiter=',', quotechar='|')
 next(spamreader, None)  # skip the headers
-ascii_offset = 161
 
 lastcase = ''
 line = ''
@@ -52,7 +53,7 @@ for row in spamreader:
         line = ''
         times = []
         numlines+=1
-    line+=unichr(int(row[1])+ascii_offset)
+    line+=getUnicode_fromInt(row[1])
     timesincelastevent = datetime.fromtimestamp(time.mktime(t))-datetime.fromtimestamp(time.mktime(lasteventtime))
     timesincecasestart = datetime.fromtimestamp(time.mktime(t))-datetime.fromtimestamp(time.mktime(casestarttime))
     timediff = 86400 * timesincelastevent.days + timesincelastevent.seconds
@@ -136,7 +137,7 @@ for row in spamreader:
         line = ''
         times = []
         numlines+=1
-    line+=unichr(int(row[1])+ascii_offset)
+    line+=getUnicode_fromInt(row[1])
     timesincelastevent = datetime.fromtimestamp(time.mktime(t))-datetime.fromtimestamp(time.mktime(lasteventtime))
     timesincecasestart = datetime.fromtimestamp(time.mktime(t))-datetime.fromtimestamp(time.mktime(casestarttime))
     midnight = datetime.fromtimestamp(time.mktime(t)).replace(hour=0, minute=0, second=0, microsecond=0)
