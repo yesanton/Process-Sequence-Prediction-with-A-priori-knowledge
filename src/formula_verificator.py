@@ -46,7 +46,7 @@ def verify_formula_as_compliant(trace):
     trace_new = gateway.jvm.java.util.ArrayList()
     for i in range(len(trace)):
         trace_new.append(str(getInt_fromUnicode(trace[i])))
-    ver = verificator_app.isTraceViolated(formula_help_desk4, trace_new) == False
+    ver = verificator_app.isTraceViolated(formula_help_desk3, trace_new) == False
 
  #   print str(ver)
     return ver

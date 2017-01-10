@@ -184,6 +184,7 @@ lines_t = lines_t_v
 lines_t2 = lines_t2_v
 lines_t3 = lines_t3_v
 
+#this is the beam stack size, means how many "best" alternatives will be stored
 beam_size = 3
 
 
@@ -262,18 +263,21 @@ with open('output_files/results/suffix_and_remaining_time2_%s' % eventlog, 'wb')
                         search_tree_root.descendants[i] = MultileafTree(beam_size, temp_state_data,
                                                                       temp_cropped_line, temp_total_predicted_time, search_tree_root)
 
-                    search_tree_root = search_tree_root.choose_next_top_descendant()
-
+                search_tree_root = search_tree_root.choose_next_top_descendant()
+                if prediction_end_reached:
+                    prediction_end_reached = False;
                 if search_tree_root == None:
-                    print "Cannot find any trace that is compliant with current beam size";
+                    print "Cannot find any trace that is compliant with formula given current beam size";
                     break
 
             output = []
 
-
-
-            predicted = (search_tree_root.cropped_line[prefix_size:])
-            total_predicted_time = search_tree_root.total_predicted_time
+            if search_tree_root == None:
+                predicted = u""
+                total_predicted_time = 0
+            else:
+                predicted = (search_tree_root.cropped_line[prefix_size:])
+                total_predicted_time = search_tree_root.total_predicted_time
 
 
             if len(ground_truth)>0:
