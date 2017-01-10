@@ -32,6 +32,7 @@ from itertools import izip
 from datetime import datetime
 from math import log
 from shared_variables import getUnicode_fromInt
+import tensorflow as tf
 
 eventlog = "helpdesk.csv"
 
@@ -332,4 +333,5 @@ early_stopping = EarlyStopping(monitor='val_loss', patience=42)
 model_checkpoint = ModelCheckpoint('output_files/models/model_{epoch:02d}-{val_loss:.2f}.h5', monitor='val_loss', verbose=0, save_best_only=True, save_weights_only=False, mode='auto')
 lr_reducer = ReduceLROnPlateau(monitor='val_loss', factor=0.5, patience=10, verbose=0, mode='auto', epsilon=0.0001, cooldown=0, min_lr=0)
 
-model.fit(X, {'act_output':y_a, 'time_output':y_t}, validation_split=0.2, verbose=2, callbacks=[early_stopping, model_checkpoint, lr_reducer], batch_size=maxlen, nb_epoch=500)
+with tf.device('/gpu:1'):
+    model.fit(X, {'act_output':y_a, 'time_output':y_t}, validation_split=0.2, verbose=2, callbacks=[early_stopping, model_checkpoint, lr_reducer], batch_size=maxlen, nb_epoch=500)

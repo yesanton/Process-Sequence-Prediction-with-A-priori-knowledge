@@ -9,12 +9,21 @@ from __future__ import division
 import unicodecsv
 
 eventlog = "helpdesk.csv"
-csvfile = open('output_files/results/suffix_and_remaining_time_%s' % eventlog, 'r')
+csvfile = open('output_files/results/suffix_and_remaining_time2_%s' % eventlog, 'r')
 r = unicodecsv.reader(csvfile ,encoding='utf-8')
 r.next() # header
 vals = dict()
+
+
+damerau = 0
+count = 0
+
 for row in r:
     l = list()
+
+    count += 1
+    damerau += float(row[4])
+
     if row[0] in vals.keys():
         l = vals.get(row[0])
     if len(row[1])==0 and len(row[2])==0:
@@ -36,3 +45,5 @@ for k in vals.keys():
     print('{}: {}'.format(k, res))
 
 print('total: {}'.format(sum(l2)/len(l2)))
+
+print('damerau: {}'.format(damerau/count))

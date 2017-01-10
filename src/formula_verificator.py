@@ -7,7 +7,7 @@
 #
 # from py4j.java_gateway import JavaGateway
 #
-#
+#   
 # gateway = JavaGateway()
 # #
 # # java_list = gateway.jvm.java.util.ArrayList()
@@ -39,12 +39,17 @@ formula = "(  <>(\"tumor marker CA-19.9\") ) \\/ ( <> (\"ca-125 using meia\") ) 
 
 formula_help_desk1 = "( <>(\"6\") ) "
 formula_help_desk2 = "( <>(\"2\") /\  ( <>(\"6\") ) "
+formula_help_desk3 = "( <>(\"7\") \\/  <> (\"9\") \\/  <> (\"3\") \\/  <> (\"4\") \\/  <> (\"5\") ) "
+formula_help_desk4 = "( <>(\"1\") ) "
 
-def verify_formula(trace):
-    trace_new = ""
+def verify_formula_as_compliant(trace):
+    trace_new = gateway.jvm.java.util.ArrayList()
     for i in range(len(trace)):
-        trace_new += str(getInt_fromUnicode(trace[i]))
-    return verificator_app.isTraceViolated(formula_help_desk2,trace_new)
+        trace_new.append(str(getInt_fromUnicode(trace[i])))
+    ver = verificator_app.isTraceViolated(formula_help_desk4, trace_new) == False
+
+ #   print str(ver)
+    return ver
 
 
-#print verify_formula("aaa")
+    #print verify_formula("aaa")
