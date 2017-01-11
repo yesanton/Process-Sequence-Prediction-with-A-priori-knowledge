@@ -44,9 +44,7 @@ times3 = []
 numlines = 0
 casestarttime = None
 lasteventtime = None
-csvfile = open('../data/%s' % eventlog, 'r')
-spamreader = csv.reader(csvfile, delimiter=',', quotechar='|')
-next(spamreader, None)  # skip the headers
+
 for row in spamreader:
     t = time.strptime(row[2], "%Y-%m-%d %H:%M:%S")
     if row[0]!=lastcase:
