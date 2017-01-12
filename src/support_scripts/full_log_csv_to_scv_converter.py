@@ -17,6 +17,9 @@ with open('%s' % eventlog_out, 'wb') as csvfile_out:
     writer = csv.writer(csvfile_out, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
     writer.writerow(["CaseID","ActivityID","CompleteTimestamp"])
 
+    mark = True
+
+    current_event = 0
     for row in spamreader:
         timestamp = row[85] #timestamp in hospital log
         split_time = timestamp.split("T")
@@ -33,7 +36,21 @@ with open('%s' % eventlog_out, 'wb') as csvfile_out:
         output.append(dictionary[row[1]])
         output.append(timestamp)
 
-        writer.writerow(output)
+        if mark:
+            mark = False
+            trace_save = [output]
+        if current_event != row[0]:
+            current_event = row[0]
+            if len(trace_save) < 200:
+                for i in range(len(trace_save)):
+                    writer.writerow(trace_save[i])
+            trace_save = [output]
+        else:
+            trace_save.append(output)
+
+
+
+
 
 
 

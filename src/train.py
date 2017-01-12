@@ -34,7 +34,7 @@ from math import log
 from shared_variables import getUnicode_fromInt
 import tensorflow as tf
 
-eventlog = "helpdesk.csv"
+eventlog = "bpi_11.csv"
 
 ########################################################################################
 #
@@ -330,7 +330,8 @@ opt = Nadam(lr=0.002, beta_1=0.9, beta_2=0.999, epsilon=1e-08, schedule_decay=0.
 
 model.compile(loss={'act_output':'categorical_crossentropy', 'time_output':'mae'}, optimizer=opt)
 early_stopping = EarlyStopping(monitor='val_loss', patience=42)
-model_checkpoint = ModelCheckpoint('output_files/models/model_{epoch:02d}-{val_loss:.2f}.h5', monitor='val_loss', verbose=0, save_best_only=True, save_weights_only=False, mode='auto')
+path_to_model = 'output_files/models_' + eventlog[:-4] + '/model_{epoch:02d}-{val_loss:.2f}.h5'
+model_checkpoint = ModelCheckpoint(path_to_model, monitor='val_loss', verbose=0, save_best_only=True, save_weights_only=False, mode='auto')
 lr_reducer = ReduceLROnPlateau(monitor='val_loss', factor=0.5, patience=10, verbose=0, mode='auto', epsilon=0.0001, cooldown=0, min_lr=0)
 
 with tf.device('/gpu:1'):
