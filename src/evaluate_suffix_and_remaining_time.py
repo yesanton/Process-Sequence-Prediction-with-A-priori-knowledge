@@ -182,7 +182,7 @@ lines_t = lines_t_v
 lines_t2 = lines_t2_v
 lines_t3 = lines_t3_v
 
-with open('output_files/results/suffix_and_remaining_time_%s' % eventlog, 'wb') as csvfile:
+with open('output_files/results/suffix_and_remaining_time0_%s' % eventlog, 'wb') as csvfile:
     spamwriter = csv.writer(csvfile, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
     spamwriter.writerow(["Prefix length", "Groud truth", "Predicted", "Levenshtein", "Damerau", "Jaccard", "Ground truth times", "Predicted times", "RMSE", "MAE", "Median AE"])
     for prefix_size in range(2,maxlen):

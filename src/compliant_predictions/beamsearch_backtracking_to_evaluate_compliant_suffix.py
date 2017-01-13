@@ -37,7 +37,7 @@ one_ahead_pred = []
 model = load_model('../output_files/models/model_89-1.50__.h5')
 
 # make predictions
-with open('../output_files/results/suffix_and_remaining_time2_%s' % eventlog, 'wb') as csvfile:
+with open('../output_files/results/suffix_and_remaining_time1_%s' % eventlog, 'wb') as csvfile:
     spamwriter = csv.writer(csvfile, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
     spamwriter.writerow(["Prefix length", "Groud truth", "Predicted", "Levenshtein", "Damerau", "Jaccard", "Ground truth times", "Predicted times", "RMSE", "MAE", "Median AE"])
     for prefix_size in range(2,maxlen):
