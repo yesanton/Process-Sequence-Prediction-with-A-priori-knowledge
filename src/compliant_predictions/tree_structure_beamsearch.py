@@ -9,7 +9,6 @@ class Node_status():
     discovered, closed = range(2)
 
 class MultileafTree():
-    car = "as"
     def __init__(self, depth, data, cropped_line, total_predicted_time, parent = None):
         self.descendants = [None] * depth
         # parent node for backtracking

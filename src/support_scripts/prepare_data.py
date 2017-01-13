@@ -6,27 +6,22 @@ Author: Anton Yeshchenko
 '''
 
 from __future__ import division
-from keras.models import load_model
-import csv
+
 import copy
-import numpy as np
-import distance
-from itertools import izip
-from jellyfish._jellyfish import damerau_levenshtein_distance
-import unicodecsv
-from sklearn import metrics
-from math import sqrt
+import csv
 import time
-from datetime import datetime, timedelta
-import matplotlib.pyplot as plt
 from collections import Counter
-from src.shared_variables import getUnicode_fromInt
+from datetime import datetime
+from itertools import izip
+
+import numpy as np
+
 from src.formula_verificator import  verify_formula_as_compliant
-from src.tree_structures_beam_search import MultileafTree, Node_status
+from src.shared_variables import getUnicode_fromInt
 
 
 def prepare_testing_data(eventlog, only_compliant = False):
-    csvfile = open('../data/%s' % eventlog, 'r')
+    csvfile = open('../../data/%s' % eventlog, 'r')
     spamreader = csv.reader(csvfile, delimiter=',', quotechar='|')
     next(spamreader, None)  # skip the headers
 
