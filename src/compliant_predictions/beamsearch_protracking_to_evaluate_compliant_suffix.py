@@ -17,13 +17,29 @@ from jellyfish._jellyfish import damerau_levenshtein_distance
 from keras.models import load_model
 from sklearn import metrics
 
-from src.compliant_predictions.tree_structure_beamsearch import MultileafTree
-from src.formula_verificator import  verify_formula_as_compliant
-from src.shared_variables import path_to_model_file, eventlog
-from src.support_scripts.prepare_data import encode
-from src.support_scripts.prepare_data import getSymbol
-from src.support_scripts.prepare_data import prepare_testing_data
+from inspect import getsourcefile
+import os.path
+import sys
+
+from tree_structure_beamsearch import MultileafTree
+
+current_path = os.path.abspath(getsourcefile(lambda:0))
+current_dir = os.path.dirname(current_path)
+parent_dir = current_dir[:current_dir.rfind(os.path.sep)]
+
+sys.path.insert(0, parent_dir)
+
+
+from formula_verificator import  verify_formula_as_compliant
+from shared_variables import path_to_model_file, eventlog
+from support_scripts.prepare_data import encode
+from support_scripts.prepare_data import getSymbol
+from support_scripts.prepare_data import prepare_testing_data
 import numpy as np
+
+import time
+start_time = time.time()
+
 
 only_compliant = True
 lines, lines_t, lines_t2, lines_t3, maxlen, chars, char_indices,divisor, divisor2, divisor3, predict_size,target_indices_char = prepare_testing_data(eventlog, only_compliant)
@@ -172,3 +188,8 @@ with open('../output_files/results/suffix_and_remaining_time2_%s' % eventlog, 'w
                 output.append(metrics.mean_absolute_error([ground_truth_t], [total_predicted_time]))
                 output.append(metrics.median_absolute_error([ground_truth_t], [total_predicted_time]))
                 spamwriter.writerow(output)
+
+
+
+
+print("TIME TO FINISH --- %s seconds ---" % (time.time() - start_time))

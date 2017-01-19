@@ -22,7 +22,9 @@ from datetime import datetime, timedelta
 import matplotlib.pyplot as plt
 from collections import Counter
 from shared_variables import getUnicode_fromInt, path_to_model_file, eventlog
-from src.formula_verificator import  verify_formula_as_compliant
+from formula_verificator import  verify_formula_as_compliant
+
+start_time = time.time()
 
 csvfile = open('../data/%s' % eventlog, 'r')
 spamreader = csv.reader(csvfile, delimiter=',', quotechar='|')
@@ -236,3 +238,4 @@ with open('output_files/results/suffix_and_remaining_time0_%s' % eventlog, 'wb')
                 output.append(metrics.mean_absolute_error([ground_truth_t], [total_predicted_time]))
                 output.append(metrics.median_absolute_error([ground_truth_t], [total_predicted_time]))
                 spamwriter.writerow(output)
+print("TIME TO FINISH --- %s seconds ---" % (time.time() - start_time))

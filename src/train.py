@@ -31,10 +31,10 @@ import time
 from itertools import izip
 from datetime import datetime
 from math import log
-from shared_variables import getUnicode_fromInt
+from shared_variables import getUnicode_fromInt, eventlog
 import tensorflow as tf
 
-eventlog = "bpi_11.csv"
+
 
 ########################################################################################
 #
@@ -334,5 +334,4 @@ path_to_model = 'output_files/models_' + eventlog[:-4] + '/model_{epoch:02d}-{va
 model_checkpoint = ModelCheckpoint(path_to_model, monitor='val_loss', verbose=0, save_best_only=True, save_weights_only=False, mode='auto')
 lr_reducer = ReduceLROnPlateau(monitor='val_loss', factor=0.5, patience=10, verbose=0, mode='auto', epsilon=0.0001, cooldown=0, min_lr=0)
 
-with tf.device('/gpu:1'):
-    model.fit(X, {'act_output':y_a, 'time_output':y_t}, validation_split=0.2, verbose=2, callbacks=[early_stopping, model_checkpoint, lr_reducer], batch_size=maxlen, nb_epoch=500)
+model.fit(X, {'act_output':y_a, 'time_output':y_t}, validation_split=0.2, verbose=2, callbacks=[early_stopping, model_checkpoint, lr_reducer], batch_size=maxlen, nb_epoch=500)

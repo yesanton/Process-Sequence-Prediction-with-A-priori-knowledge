@@ -11,10 +11,10 @@ import string
 
 import unicodecsv
 
-eventlog = "helpdesk.csv"
+from src.shared_variables import eventlog
 
 
-def output(eventlogs, number_logs = 3):
+def output(eventlogs, number_logs = 1):
     res_dict = dict()
     res_dict['total'] = []
     res_dict['damerau'] = []
