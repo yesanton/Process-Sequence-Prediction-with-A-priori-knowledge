@@ -17,6 +17,7 @@ from jellyfish._jellyfish import damerau_levenshtein_distance
 from keras.models import load_model
 from sklearn import metrics
 
+from src.shared_variables import evaluate_suffix_start_from, evaluate_suffix_end
 from tree_structure_beamsearch import MultileafTree
 
 from inspect import getsourcefile
@@ -52,7 +53,7 @@ model = load_model(path_to_model_file)
 with open('../output_files/results/suffix_and_remaining_time1_%s' % eventlog, 'wb') as csvfile:
     spamwriter = csv.writer(csvfile, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
     spamwriter.writerow(["Prefix length", "Groud truth", "Predicted", "Levenshtein", "Damerau", "Jaccard", "Ground truth times", "Predicted times", "RMSE", "MAE", "Median AE"])
-    for prefix_size in range(2,maxlen):
+    for prefix_size in range(evaluate_suffix_start_from, evaluate_suffix_end):
         print(prefix_size)
         for line, times, times2, times3 in izip(lines, lines_t, lines_t2, lines_t3):
             prediction_end_reached = False

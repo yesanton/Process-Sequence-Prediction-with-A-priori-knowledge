@@ -13,11 +13,15 @@ import unicodecsv
 
 from src.shared_variables import eventlog
 
-
-def output(eventlogs, number_logs = 1):
+averageTraceLengths = []
+print "For event log : " , eventlog
+def output(eventlogs, number_logs = 3):
     res_dict = dict()
     res_dict['total'] = []
     res_dict['damerau'] = []
+
+    averageTraceLengthsGroundTruth = 0
+    mark = False
 
     for i in range(number_logs):
         csvfile = open('output_files/results/suffix_and_remaining_time' + str(i) + '_%s' % eventlog, 'r')
@@ -25,6 +29,7 @@ def output(eventlogs, number_logs = 1):
         r.next() # header
         vals = dict()
 
+        average_trace_length = 0
 
         damerau = 0
         count = 0
@@ -45,6 +50,19 @@ def output(eventlogs, number_logs = 1):
             vals[row[0]] = l
             #print(vals)
 
+            average_trace_length += len(row[2])
+
+            if not mark:
+                averageTraceLengthsGroundTruth += len(row[1])
+
+        if not mark:
+            mark = True
+            res_dict['average trace lenght ground truth'] = averageTraceLengthsGroundTruth / count
+            res_dict['traces'] = count
+
+        averageTraceLengths.append(str(float(average_trace_length)/count))
+
+
         l2 = list()
         for k in vals.keys():
             #print('{}: {}'.format(k, vals[k]))
@@ -63,8 +81,13 @@ res = output(eventlog)
 
 print "Unmod pred  --  backtracking  --  protracking"
 for key in res:
-    if not (key == 'total' or key == 'damerau'):
+    if not (key == 'total' or key == 'damerau' or key == 'average trace lenght ground truth' or key == 'traces'):
         print key, ' === ', string.join(res[key], ' - ')
 
 print 'total', ' === ', string.join(res['total'])
 print 'damerau', ' === ', string.join(res['damerau'])
+
+print 'average trace lenght === ', string.join(averageTraceLengths, ' - ')
+print 'average trace length ground truth === ', res['average trace lenght ground truth']
+print 'number of traces ===', res['traces']
+

@@ -39,14 +39,29 @@ formula = "(  <>(\"tumor marker CA-19.9\") ) \\/ ( <> (\"ca-125 using meia\") ) 
 
 formula_help_desk1 = "( <>(\"6\") ) "
 formula_help_desk2 = "( <>(\"2\") /\  ( <>(\"6\") ) "
-formula_help_desk3 = "( <>(\"7\") \\/  <> (\"9\") \\/  <> (\"3\") \\/  <> (\"4\") \\/  <> (\"5\") ) "
+formula_help_desk3 = "( <>(\"7\") \\/  <> (\"9\") \\/  <> (\"3\") \\/  <> (\"4\") \\/  <> (\"5\") \\/  <> (\"1\") \\/  <> (\"2\") ) "
 formula_help_desk4 = "( <>(\"1\") ) "
 
+formula_env_permit1 = "( <>(\"45\") \\/  <> (\"46\") ) "
+
+formula_env_permit_res = "[]((\"1\") -> <> (\"2\"))"
+formula_env_permit_precendence = "[]!(\"1\")   \/   (!(\"1\")  U  (\"2\"))"
+formula_env_permit_exclusive = " (<> A   \/  <>B)  /\  ! (<> A   /\  <>B)"
+
+formula_env_permit = "([]((\"118\") -> <> (\"126\"))) "
+formula_12 = "((\"6\") \\/  <> (\"5\") \\/  <> (\"4\") \\/  <> (\"5\") ) "
+
+formula_bpi11 = " (<> \"97\"   \/  <> \"3\")  /\  ! (<> \"97\"   /\  <>\"3\")"
+
+formula_bpi13 = " (<> \"1\"   \/  <> \"2\")  /\  ! (<> \"1\"   /\  <>\"2\")"
+
+
+ #\\/  <> (\"25\")
 def verify_formula_as_compliant(trace):
     trace_new = gateway.jvm.java.util.ArrayList()
     for i in range(len(trace)):
         trace_new.append(str(getInt_fromUnicode(trace[i])))
-    ver = verificator_app.isTraceViolated(formula_help_desk3, trace_new) == False
+    ver = verificator_app.isTraceViolated(formula_bpi11 , trace_new) == False
 
  #   print str(ver)
     return ver

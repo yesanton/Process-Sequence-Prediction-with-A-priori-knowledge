@@ -106,6 +106,14 @@ print('divisor2: {}'.format(divisor2))
 # separate training data into 3 parts
 
 elems_per_fold = int(round(numlines/3))
+
+many = 0
+for i in range(len(lines)):
+    many = many + len(lines[i])
+
+print ("average length of the trace: " , many / len(lines))
+print ("number of traces: ", len(lines))
+
 fold1 = lines[:elems_per_fold]
 fold1_t = timeseqs[:elems_per_fold]
 fold1_t2 = timeseqs2[:elems_per_fold]
