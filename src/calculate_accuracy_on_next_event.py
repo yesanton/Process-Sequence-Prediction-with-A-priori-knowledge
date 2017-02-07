@@ -23,7 +23,7 @@ def output(eventlogs, number_logs = 3):
     averageTraceLengthsGroundTruth = 0
     mark = False
 
-    for i in range(number_logs):
+    for i in range(number_logs+1):
         csvfile = open('output_files/results/suffix_and_remaining_time' + str(i) + '_%s' % eventlog, 'r')
         r = unicodecsv.reader(csvfile ,encoding='utf-8')
         r.next() # header
