@@ -15,7 +15,7 @@ from src.shared_variables import eventlog
 
 averageTraceLengths = []
 print "For event log : " , eventlog
-def output(eventlogs, number_logs = 3):
+def output(eventlogs, number_logs = 5):
     res_dict = dict()
     res_dict['total'] = []
     res_dict['damerau'] = []
@@ -23,7 +23,7 @@ def output(eventlogs, number_logs = 3):
     averageTraceLengthsGroundTruth = 0
     mark = False
 
-    for i in range(number_logs+1):
+    for i in range(number_logs):
         csvfile = open('output_files/results/suffix_and_remaining_time' + str(i) + '_%s' % eventlog, 'r')
         r = unicodecsv.reader(csvfile ,encoding='utf-8')
         r.next() # header

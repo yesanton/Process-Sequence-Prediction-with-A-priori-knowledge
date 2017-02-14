@@ -9,9 +9,9 @@ import csv
 
 import time
 
-eventlog_in = "./../../data/helpdesk.csv"
+eventlog_in = "./../../data/bpi_11.csv"
 
-prefix_size = 2
+prefix_size = 20
 
 
 csvfile_in = open('%s' % eventlog_in, 'r')

@@ -24,7 +24,8 @@ import matplotlib.pyplot as plt
 from collections import Counter
 
 from src.formula_verificator import verify_formula_as_compliant
-from src.shared_variables import eventlog, getUnicode_fromInt, path_to_model_file
+from src.shared_variables import eventlog, getUnicode_fromInt, path_to_model_file, prefix_size_fed
+from src.support_scripts.prepare_data import repetitions, amplify, getSymbolAmpl
 
 start_time = time.time()
 
@@ -159,15 +160,6 @@ def encode(sentence, times, times3, maxlen=maxlen):
 #find cycles and modify the probability functionality goes here
 stop_symbol_probability_amplifier_current = 1
 
-regex = re.compile(r'(.+.+)(\1)+')
-match = regex.search('3 0 5 5 1 5 1 6 8')
-
-
-#modify to be able to get second best prediction
-def getSymbol(predictions, ith_best = 0):
-    predictions[0] =  predictions[0] * stop_symbol_probability_amplifier_current
-    i = np.argsort(predictions)[len(predictions) - ith_best - 1]
-    return target_indices_char[i]
 
 one_ahead_gt = []
 one_ahead_pred = []
@@ -203,7 +195,7 @@ lines_t3 = lines_t3_v
 with open('../output_files/results/suffix_and_remaining_time3_%s' % eventlog, 'wb') as csvfile:
     spamwriter = csv.writer(csvfile, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
     spamwriter.writerow(["Prefix length", "Groud truth", "Predicted", "Levenshtein", "Damerau", "Jaccard", "Ground truth times", "Predicted times", "RMSE", "MAE", "Median AE"])
-    for prefix_size in range(10,11):
+    for prefix_size in range(3,10):
         print(prefix_size)
         for line, times, times2, times3 in izip(lines, lines_t, lines_t2, lines_t3):
             times.append(0)
@@ -224,15 +216,11 @@ with open('../output_files/results/suffix_and_remaining_time3_%s' % eventlog, 'w
                 # split predictions into seperate activity and time predictions
                 y_char = y[0][0]
                 y_t = y[1][0][0]
-                prediction = getSymbol(y_char) # undo one-hot encoding
+                prediction = getSymbolAmpl(y_char,target_indices_char, stop_symbol_probability_amplifier_current) # undo one-hot encoding
                 cropped_line += prediction
 
-                match = regex.search(cropped_line, re.UNICODE)
-                #the match.group(0) finds the whole substring that contains 1+ cycles
-                #the match.group(1) finds the substring that indicates the cycle
 
-                if match != None:
-                    stop_symbol_probability_amplifier_current = np.math.exp(len(match.group(0)) / len(match.group(1)))
+                stop_symbol_probability_amplifier_current = amplify(cropped_line)
 
 
 

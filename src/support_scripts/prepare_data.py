@@ -9,6 +9,7 @@ from __future__ import division
 
 import copy
 import csv
+import re
 import time
 from collections import Counter
 from datetime import datetime
@@ -172,3 +173,41 @@ def encode(sentence, times, times3, maxlen, chars, char_indices, divisor, diviso
 def getSymbol(predictions, target_indices_char, ith_best=0):
     i = np.argsort(predictions)[len(predictions) - ith_best - 1]
     return target_indices_char[i]
+
+#modify to be able to get second best prediction
+def getSymbolAmpl(predictions, target_indices_char,  stop_symbol_probability_amplifier_current,  ith_best = 0):
+    predictions[0] =  predictions[0] * stop_symbol_probability_amplifier_current
+    i = np.argsort(predictions)[len(predictions) - ith_best - 1]
+    return target_indices_char[i]
+
+
+#find repetitions
+def repetitions(s):
+   r = re.compile(r"(.+?)\1+")
+   for match in r.finditer(s):
+       yield (match.group(1), len(match.group(0))/len(match.group(1)))
+
+
+def amplify(s):
+    list_of_rep = list(repetitions(s))
+    if list_of_rep:
+        str_rep = list_of_rep[-1][0]
+        if s.endswith(str_rep):
+#            return np.math.exp(np.math.pow(list_of_rep[-1][-1],3))
+            return np.math.exp(list_of_rep[-1][-1])
+        else:
+            return 1
+    return 1
+
+
+#the match.group(0) finds the whole substring that contains 1+ cycles
+# #the match.group(1) finds the substring that indicates the cycle
+
+
+
+
+
+
+
+
+
