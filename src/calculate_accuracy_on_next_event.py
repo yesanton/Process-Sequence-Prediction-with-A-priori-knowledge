@@ -15,7 +15,7 @@ from src.shared_variables import eventlog
 
 averageTraceLengths = []
 print "For event log : " , eventlog
-def output(eventlogs, number_logs = 5):
+def output(eventlogs, number_logs = 6):
     res_dict = dict()
     res_dict['total'] = []
     res_dict['damerau'] = []
