@@ -89,11 +89,13 @@ formula_used_bpi11 = formula_bpi11_not_chain_succ1 + " /\ " + \
                      formula_bpi11_not_chain_succ3 + " /\ " + \
                      formula_bpi11_choice1 + " /\ " + formula_bpi11_choice2
 
+formula_bpi17_succ = "( []((\"11\" -> <>(\"17\"))) /\ (( (!(\"17\") U \"11\" )) \/ ([](!(\"17\")))) )"
+
 def verify_formula_as_compliant(trace):
     trace_new = gateway.jvm.java.util.ArrayList()
     for i in range(len(trace)): #prefix_size_fed,
         trace_new.append(str(getInt_fromUnicode(trace[i])))
-    ver = verificator_app.isTraceViolated(formula_env_permit, trace_new) == False
+    ver = verificator_app.isTraceViolated(formula_12, trace_new) == False
  #   print str(ver)
     return ver
 
