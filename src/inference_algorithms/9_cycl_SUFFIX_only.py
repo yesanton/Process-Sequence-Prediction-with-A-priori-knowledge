@@ -171,18 +171,16 @@ two_ahead_pred = []
 three_ahead_gt = []
 three_ahead_pred = []
 
-
-
-lines, lines_t, lines_t2, lines_t3 = selectFormulaVerifiedTraces(lines, lines_t, lines_t2, lines_t3)
-
-
-
-
 with open('../output_files/results/suffix_and_remaining_time3_%s' % eventlog, 'wb') as csvfile:
     spamwriter = csv.writer(csvfile, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
     spamwriter.writerow(["Prefix length", "Groud truth", "Predicted", "Levenshtein", "Damerau", "Jaccard", "Ground truth times", "Predicted times", "RMSE", "MAE", "Median AE"])
     for prefix_size in range(prefix_size_pred_from, prefix_size_pred_to):
-        print(prefix_size)
+
+        lines_s, lines_t_s, lines_t2_s, lines_t3_s = selectFormulaVerifiedTraces(lines, lines_t, lines_t2, lines_t3,
+                                                                                 prefix_size)
+        print("prefix size: " + str(prefix_size))
+        print("formulas verifited: " + str(len(lines_s)) + " out of : " + str(len(lines)))
+
         for line, times, times2, times3 in izip(lines, lines_t, lines_t2, lines_t3):
             times.append(0)
             cropped_line = ''.join(line[:prefix_size])
