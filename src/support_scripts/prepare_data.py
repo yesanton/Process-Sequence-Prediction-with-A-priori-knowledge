@@ -122,31 +122,24 @@ def prepare_testing_data(eventlog, only_compliant = False):
     predict_size = maxlen
 
 
+    return lines, lines_t, lines_t2, lines_t3, maxlen, chars, char_indices,divisor, divisor2, divisor3, predict_size,target_indices_char
 
 
-
-
-
-
-
+def selectFormulaVerifiedTraces(lines, lines_t, lines_t2, lines_t3, prefix = 0):
     # select only lines with formula verified
     lines_v = []
     lines_t_v = []
     lines_t2_v = []
     lines_t3_v = []
     for line, times, times2, times3 in izip(lines, lines_t, lines_t2, lines_t3):
-        if verify_formula_as_compliant(line):
+        if verify_formula_as_compliant(line,prefix):
             lines_v.append(line)
             lines_t_v.append(times)
             lines_t2_v.append(times2)
             lines_t3_v.append(times3)
 
-    lines = lines_v
-    lines_t = lines_t_v
-    lines_t2 = lines_t2_v
-    lines_t3 = lines_t3_v
+    return lines_v, lines_t_v, lines_t2_v, lines_t3_v
 
-    return lines, lines_t, lines_t2, lines_t3, maxlen, chars, char_indices,divisor, divisor2, divisor3, predict_size,target_indices_char
 
 # define helper functions
 # this one encodes the current sentence into the onehot encoding

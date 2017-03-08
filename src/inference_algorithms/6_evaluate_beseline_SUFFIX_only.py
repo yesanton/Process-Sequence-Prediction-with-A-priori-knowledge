@@ -168,33 +168,15 @@ two_ahead_pred = []
 three_ahead_gt = []
 three_ahead_pred = []
 
-# #select only lines with formula verified
-# lines_v = []
-# lines_t_v = []
-# lines_t2_v = []
-# lines_t3_v = []
-# for line, times, times2, times3 in izip(lines, lines_t, lines_t2, lines_t3):
-#     if verify_formula_as_compliant(line):
-#         lines_v.append(line)
-#         lines_t_v.append(times)
-#         lines_t2_v.append(times2)
-#         lines_t3_v.append(times3)
-#
-# lines = lines_v
-# lines_t = lines_t_v
-# lines_t2 = lines_t2_v
-# lines_t3 = lines_t3_v
 
-lines, lines_t, lines_t2, lines_t3 = selectFormulaVerifiedTraces(lines, lines_t, lines_t2, lines_t3)
-
-
-
-with open('output_files/results/suffix_and_remaining_time0_%s' % eventlog, 'wb') as csvfile:
+with open('../output_files/results/suffix_and_remaining_time6_%s' % eventlog, 'wb') as csvfile:
     spamwriter = csv.writer(csvfile, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
     spamwriter.writerow(["Prefix length", "Groud truth", "Predicted", "Levenshtein", "Damerau", "Jaccard", "Ground truth times", "Predicted times", "RMSE", "MAE", "Median AE"])
     for prefix_size in range(prefix_size_pred_from, prefix_size_pred_to): #prefix_size_fed,prefix_size_fed+1
+        lines_s, lines_t_s, lines_t2_s, lines_t3_s = selectFormulaVerifiedTraces(lines, lines_t, lines_t2, lines_t3, prefix_size)
         print(prefix_size)
-        for line, times, times2, times3 in izip(lines, lines_t, lines_t2, lines_t3):
+        print("formulas verifited: " + str(len(lines_s)) + " out of : " + str(len(lines)))
+        for line, times, times2, times3 in izip(lines_s, lines_t_s, lines_t2_s, lines_t3_s):
             times.append(0)
             cropped_line = ''.join(line[:prefix_size])
             cropped_times = times[:prefix_size]

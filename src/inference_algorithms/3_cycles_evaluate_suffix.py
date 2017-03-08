@@ -26,7 +26,7 @@ from collections import Counter
 from src.formula_verificator import verify_formula_as_compliant
 from src.shared_variables import eventlog, getUnicode_fromInt, path_to_model_file, prefix_size_fed, prefix_size_pred_to, \
     prefix_size_pred_from
-from src.support_scripts.prepare_data import repetitions, amplify, getSymbolAmpl
+from src.support_scripts.prepare_data import repetitions, amplify, getSymbolAmpl, selectFormulaVerifiedTraces
 
 start_time = time.time()
 
@@ -172,23 +172,23 @@ three_ahead_gt = []
 three_ahead_pred = []
 
 #select only lines with formula verified
-lines_v = []
-lines_t_v = []
-lines_t2_v = []
-lines_t3_v = []
-for line, times, times2, times3 in izip(lines, lines_t, lines_t2, lines_t3):
-    if verify_formula_as_compliant(line):
-        lines_v.append(line)
-        lines_t_v.append(times)
-        lines_t2_v.append(times2)
-        lines_t3_v.append(times3)
+# lines_v = []
+# lines_t_v = []
+# lines_t2_v = []
+# lines_t3_v = []
+# for line, times, times2, times3 in izip(lines, lines_t, lines_t2, lines_t3):
+#     if verify_formula_as_compliant(line):
+#         lines_v.append(line)
+#         lines_t_v.append(times)
+#         lines_t2_v.append(times2)
+#         lines_t3_v.append(times3)
+#
+# lines = lines_v
+# lines_t = lines_t_v
+# lines_t2 = lines_t2_v
+# lines_t3 = lines_t3_v
 
-lines = lines_v
-lines_t = lines_t_v
-lines_t2 = lines_t2_v
-lines_t3 = lines_t3_v
-
-
+lines, lines_t, lines_t2, lines_t3 = selectFormulaVerifiedTraces(lines, lines_t, lines_t2, lines_t3)
 
 
 

@@ -16,13 +16,16 @@ from keras.models import load_model
 from sklearn import metrics
 
 from src.compliant_predictions.tree_structure_beamsearch import MultileafTree
-from src.shared_variables import  prefix_size_fed, beam_size, prefix_size_pred_from, prefix_size_pred_to
+from src.formula_verificator import verify_formula_as_compliant
+from src.shared_variables import  prefix_size_fed, beam_size, prefix_size_pred_from, prefix_size_pred_to, \
+    path_to_model_file, eventlog
 
 from inspect import getsourcefile
 import os.path
 import sys
 
-from src.support_scripts.prepare_data import amplify, getSymbolAmpl
+from src.support_scripts.prepare_data import amplify, getSymbolAmpl, prepare_testing_data, encode, \
+    selectFormulaVerifiedTraces
 
 current_path = os.path.abspath(getsourcefile(lambda:0))
 current_dir = os.path.dirname(current_path)
@@ -30,17 +33,14 @@ parent_dir = current_dir[:current_dir.rfind(os.path.sep)]
 
 sys.path.insert(0, parent_dir)
 
-from formula_verificator import verify_formula_as_compliant
-from shared_variables import path_to_model_file, eventlog
-from support_scripts.prepare_data import encode
-from support_scripts.prepare_data import getSymbol
-from support_scripts.prepare_data import prepare_testing_data
+
 
 import time
 start_time = time.time()
 
 only_compliant = True
 lines, lines_t, lines_t2, lines_t3, maxlen, chars, char_indices,divisor, divisor2, divisor3, predict_size,target_indices_char = prepare_testing_data(eventlog, only_compliant)
+
 
 #this is the beam stack size, means how many "best" alternatives will be stored
 
@@ -60,12 +60,15 @@ one_ahead_pred = []
 model = load_model(path_to_model_file)
 stop_symbol_probability_amplifier_current = 1
 # make predictions
-with open('../output_files/results/suffix_and_remaining_time4_%s' % eventlog, 'wb') as csvfile:
+with open('../output_files/results/suffix_and_remaining_time10_%s' % eventlog, 'wb') as csvfile:
     spamwriter = csv.writer(csvfile, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
     spamwriter.writerow(["Prefix length", "Groud truth", "Predicted", "Levenshtein", "Damerau", "Jaccard", "Ground truth times", "Predicted times", "RMSE", "MAE", "Median AE"])
     for prefix_size in range(prefix_size_pred_from, prefix_size_pred_to):
-        print(prefix_size)
-        for line, times, times2, times3 in izip(lines, lines_t, lines_t2, lines_t3):
+        #here we checkout the prefixes with formulas verified only on the suffix phase
+        lines_s, lines_t_s, lines_t2_s, lines_t3_s = selectFormulaVerifiedTraces(lines, lines_t, lines_t2, lines_t3, prefix_size)
+        print("prefix size: " + str(prefix_size))
+        print("formulas verifited: " + str(len(lines_s)) + " out of : " + str(len(lines)))
+        for line, times, times2, times3 in izip(lines_s, lines_t_s, lines_t2_s, lines_t3_s):
             prediction_end_reached = False
             times.append(0)
             cropped_line = ''.join(line[:prefix_size])
@@ -111,7 +114,7 @@ with open('../output_files/results/suffix_and_remaining_time4_%s' % eventlog, 'w
 
 
                 if prediction == '!': # end of case was just predicted, therefore, stop predicting further into the future
-                    if verify_formula_as_compliant(search_tree_root.cropped_line) == True:
+                    if verify_formula_as_compliant(search_tree_root.cropped_line, prefix_size) == True:
                         one_ahead_pred.append(search_tree_root.total_predicted_time)
                         one_ahead_gt.append(ground_truth_t)
                         print('! predicted, end case')

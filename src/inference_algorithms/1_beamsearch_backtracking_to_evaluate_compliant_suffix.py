@@ -23,6 +23,9 @@ from src.compliant_predictions.tree_structure_beamsearch import MultileafTree
 from inspect import getsourcefile
 import os.path
 import sys
+
+from src.support_scripts.prepare_data import selectFormulaVerifiedTraces
+
 current_path = os.path.abspath(getsourcefile(lambda:0))
 current_dir = os.path.dirname(current_path)
 parent_dir = current_dir[:current_dir.rfind(os.path.sep)]
@@ -40,7 +43,7 @@ start_time = time.time()
 
 only_compliant = True
 lines, lines_t, lines_t2, lines_t3, maxlen, chars, char_indices,divisor, divisor2, divisor3, predict_size,target_indices_char = prepare_testing_data(eventlog, only_compliant)
-
+lines, lines_t, lines_t2, lines_t3 = selectFormulaVerifiedTraces(lines, lines_t, lines_t2, lines_t3)
 #this is the beam stack size, means how many "best" alternatives will be stored
 
 one_ahead_gt = []

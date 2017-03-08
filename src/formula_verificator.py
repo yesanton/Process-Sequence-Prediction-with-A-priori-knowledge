@@ -102,11 +102,16 @@ formula_17 = formula_bpi17_succ2 + " /\ " + \
 
 formula_bpi13_succ1 = "( []((\"1\" -> <>(\"9\"))) /\ (( (!(\"9\") U \"1\" )) \/ ([](!(\"9\")))) )"
 
-def verify_formula_as_compliant(trace):
+
+formula_bpi13_suffix_only = "( <>(\"5\") /\  ( <>(\"6\") ) )"
+
+def verify_formula_as_compliant(trace, prefix = 0):
     trace_new = gateway.jvm.java.util.ArrayList()
-    for i in range(len(trace)): #prefix_size_fed,
+    for i in range(prefix, len(trace)): #prefix_size_fed,
         trace_new.append(str(getInt_fromUnicode(trace[i])))
-    ver = verificator_app.isTraceViolated(formula_12, trace_new) == False
+    if not trace_new:
+        return False
+    ver = verificator_app.isTraceViolated(formula_bpi13_suffix_only, trace_new) == False
  #   print str(ver)
     return ver
 
