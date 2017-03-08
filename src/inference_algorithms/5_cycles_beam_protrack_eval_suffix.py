@@ -21,7 +21,7 @@ from inspect import getsourcefile
 import os.path
 import sys
 
-from src.shared_variables import prefix_size_fed, beam_size
+from src.shared_variables import prefix_size_fed, beam_size, prefix_size_pred_to, prefix_size_pred_from
 from src.support_scripts.prepare_data import amplify, getSymbolAmpl
 
 current_path = os.path.abspath(getsourcefile(lambda:0))
@@ -67,7 +67,7 @@ class NodePrediction():
 with open('../output_files/results/suffix_and_remaining_time5_%s' % eventlog, 'wb') as csvfile:
     spamwriter = csv.writer(csvfile, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
     spamwriter.writerow(["Prefix length", "Groud truth", "Predicted", "Levenshtein", "Damerau", "Jaccard", "Ground truth times", "Predicted times", "RMSE", "MAE", "Median AE"])
-    for prefix_size in range(2, 20):
+    for prefix_size in range(prefix_size_pred_from, prefix_size_pred_to):
         print(prefix_size)
 
         # lines = lines[13:]

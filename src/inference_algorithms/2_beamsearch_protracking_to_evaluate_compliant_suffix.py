@@ -21,8 +21,8 @@ from inspect import getsourcefile
 import os.path
 import sys
 
-from src.shared_variables import prefix_size_fed, beam_size
-from tree_structure_beamsearch import MultileafTree
+from src.shared_variables import prefix_size_fed, beam_size, prefix_size_pred_from, prefix_size_pred_to
+from src.compliant_predictions.tree_structure_beamsearch import MultileafTree
 
 current_path = os.path.abspath(getsourcefile(lambda:0))
 current_dir = os.path.dirname(current_path)
@@ -64,7 +64,7 @@ class NodePrediction():
 with open('../output_files/results/suffix_and_remaining_time2_%s' % eventlog, 'wb') as csvfile:
     spamwriter = csv.writer(csvfile, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
     spamwriter.writerow(["Prefix length", "Groud truth", "Predicted", "Levenshtein", "Damerau", "Jaccard", "Ground truth times", "Predicted times", "RMSE", "MAE", "Median AE"])
-    for prefix_size in range(3, 10):
+    for prefix_size in range(prefix_size_pred_from, prefix_size_pred_to):
         print(prefix_size)
 
         # lines = lines[13:]

@@ -91,6 +91,17 @@ formula_used_bpi11 = formula_bpi11_not_chain_succ1 + " /\ " + \
 
 formula_bpi17_succ = "( []((\"11\" -> <>(\"17\"))) /\ (( (!(\"17\") U \"11\" )) \/ ([](!(\"17\")))) )"
 
+formula_bpi17_succ2 = "( []((\"12\" -> <>(\"10\"))) /\ (( (!(\"10\") U \"17\" )) \/ ([](!(\"10\")))) )"
+formula_bpi17_exist = "(<>(\"19\") /\ !(<>((\"19\" /\ X(<>(\"19\"))))))"
+formula_bpi17_absence = "( !( <> (( \"18\" /\ X ( <> ( \"18\" ))))) )"
+formula_bpi17_absence2 = "( !( <> (( \"11\" /\ X ( <> ( \"11\" ))))) )"
+formula_bpi17_succ1 = "( []((\"6\" -> <>(\"22\"))) /\ (( (!(\"22\") U \"6\" )) \/ ([](!(\"22\")))) )"
+
+formula_17 = formula_bpi17_succ2 + " /\ " + \
+             formula_bpi17_absence + " /\ " + formula_bpi17_succ1
+
+formula_bpi13_succ1 = "( []((\"1\" -> <>(\"9\"))) /\ (( (!(\"9\") U \"1\" )) \/ ([](!(\"9\")))) )"
+
 def verify_formula_as_compliant(trace):
     trace_new = gateway.jvm.java.util.ArrayList()
     for i in range(len(trace)): #prefix_size_fed,

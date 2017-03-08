@@ -195,6 +195,8 @@ def amplify(s):
         if s.endswith(str_rep):
 #            return np.math.exp(np.math.pow(list_of_rep[-1][-1],3))
             return np.math.exp(list_of_rep[-1][-1])
+            # return np.math.pow(list_of_rep[-1][-1],2)
+            #return list_of_rep[-1][-1]
         else:
             return 1
     return 1

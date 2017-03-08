@@ -4,17 +4,17 @@ import time
 
 import datetime
 
-eventlog_in = "bpi_17_f.csv"
+eventlog_in = "bpi_2014_detail_incident_non_processed.csv"
 csvfile_in = open('%s' % eventlog_in, 'r')
-spamreader = csv.reader(csvfile_in, delimiter=',', quotechar='|')
+spamreader = csv.reader(csvfile_in, delimiter=';', quotechar='|')
 next(spamreader, None)  # skip the headers
 
 dictionary = {}
-dictionary["a"] = 1
+#dictionary["a"] = 1
 
 give_number = 0
 
-eventlog_out = "bpi_17.csv"
+eventlog_out = "bpi_14_detail_incident.csv"
 with open('%s' % eventlog_out, 'wb') as csvfile_out:
     writer = csv.writer(csvfile_out, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
     writer.writerow(["CaseID","ActivityID","CompleteTimestamp"])
@@ -23,23 +23,23 @@ with open('%s' % eventlog_out, 'wb') as csvfile_out:
 
     current_event = 0
     for row in spamreader:
-        timestamp = row[4] #timestamp in hospital log
+        timestamp = row[1] #timestamp in hospital log
   #      split_time = timestamp.split("T")
 
  #       timestamp = split_time[0]+" "+ split_time[1].split("+")[0]
 
-        timestamp = datetime.datetime.strptime(timestamp, "%Y/%m/%d %H:%M:%S.%f")
+        timestamp = datetime.datetime.strptime(timestamp, "%d-%m-%Y %H:%M:%S") #.%f")
 
         timestamp = timestamp.strftime("%Y-%m-%d %H:%M:%S")
 
-        if row[1] not in dictionary:
-            dictionary[row[1]] = give_number
+        if row[3] not in dictionary:
+            dictionary[row[3]] = give_number
             give_number = give_number + 1
 
 
         output = []
         output.append(row[0])
-        output.append(dictionary[row[1]])
+        output.append(dictionary[row[3]])
         output.append(timestamp)
 
         if mark:

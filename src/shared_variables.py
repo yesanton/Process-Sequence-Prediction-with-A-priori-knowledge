@@ -16,7 +16,7 @@ def getUnicode_fromInt(ch):
 def getInt_fromUnicode(unch):
     return (int(ord(unch)) - ascii_offset)
 
-
+#
 # eventlog = "env_permit.csv"
 # path_to_model_file = '/home/yeshch/PycharmProjects/ProcessSequencePrediction/src/output_files/models_env_permit/model.h5'
 
@@ -24,26 +24,27 @@ def getInt_fromUnicode(unch):
 # path_to_model_file = '/home/yeshch/PycharmProjects/ProcessSequencePrediction/src/output_files/models_helpdesk/model.h5'
 
 
-# eventlog = "bpi_11.csv"
-# path_to_model_file = '/home/yeshch/PycharmProjects/ProcessSequencePrediction/src/output_files/models_bpi_11/model.h5'
+eventlog = "bpi_11.csv"
+path_to_model_file = '/home/yeshch/PycharmProjects/ProcessSequencePrediction/src/output_files/models_bpi_11/model.h5'
 
-#  eventlog = "bpi_12_w_no_repeat.csv"
+# eventlog = "bpi_12_w_no_repeat.csv"
 # path_to_model_file = '/home/yeshch/PycharmProjects/ProcessSequencePrediction/src/output_files/models_bpi_12_norep/model.h5'
-
+#
 # eventlog = "bpi_13_incidents.csv"
 # path_to_model_file = '/home/yeshch/PycharmProjects/ProcessSequencePrediction/src/output_files/models_bpi_13_incidents/model.h5'
+#
+# eventlog = "bpi_12_w.csv"
+# path_to_model_file = '/home/yeshch/PycharmProjects/ProcessSequencePrediction/src/output_files/models_bpi_12_w/model_23-1.67.h5'
 
-eventlog = "bpi_12_w.csv"
-path_to_model_file = '/home/yeshch/PycharmProjects/ProcessSequencePrediction/src/output_files/models_bpi_12_w/model_23-1.67.h5'
-
-#eventlog = "bpi_17.csv"
-#path_to_model_file = '/home/yeshch/PycharmProjects/ProcessSequencePrediction/src/output_files/models_bpi_17/***'
+# eventlog = "bpi_17.csv"
+# path_to_model_file = '/home/yeshch/PycharmProjects/ProcessSequencePrediction/src/output_files/models_bpi_17/model.h5'
 
 
 prefix_size_fed = 2
 beam_size = 3
 
-
+prefix_size_pred_from = 3
+prefix_size_pred_to = 8
 
 
 
