@@ -105,6 +105,51 @@ formula_bpi13_succ1 = "( []((\"1\" -> <>(\"9\"))) /\ (( (!(\"9\") U \"1\" )) \/ 
 
 formula_bpi13_suffix_only = "( <>(\"5\") /\  ( <>(\"6\") ) )"
 
+formula_bpi13_declareInferred1_exclusive_choice =  " (<> \"1\"   \/  <> \"8\")  /\  ! (<> \"1\"   /\  <>\"8\")"
+#formula_bpi13_declareInferred2 =  "[]((\"5\" -> ! ( <> ( \"1\" ))))" #all are satisfied
+
+
+formula_bpi14 = "( <>(\"6\") /\  ( <>(\"12\") ) )"
+
+
+mar8BPI13_alternate_responce = "[]( ( \"10\" -> X(( !(\"10\") U \"3\" )))) " #from 10 to 3
+# from 1 to 10
+mar8BPI13_alternate_precendence = "( ( !( \"10\" ) U \"1\" ) ) /\ ( ( \"10\" -> X( ( !( \"10\" ) U \"1\" ) ) ) ) ) /\ ! (\"10\" )"
+mar8BPI13_existence = "<> ( \"4\" )"
+mar8BPI13_precendence = "( ! (\"9\" ) U \"1\" ) \/ ([](!(\"9\"))) /\ ! (\"9\" )" #from 1 to 9
+mar8BPI13_chain_precedence = "[]( ( X( \"5\"  ) -> \"3\" ) )/\ ! (\"5\"  )" #from 3 to 5
+mar8BPI13_choice = "( <> ( \"1\" ) \/ <>( \"3\" ) )"
+mar8BPI13_chain_responce = "[] ( ( \"12\" -> X( \"1\" ) ) )" #from 12 to 1
+
+formula_bpi13_mined_8_march_alpha_1_support_100_20_percent_of_testingtraces_all_formulas_declaleMiner = \
+    mar8BPI13_alternate_responce  + " /\ " + \
+    mar8BPI13_alternate_precendence   + " /\ " + \
+    mar8BPI13_existence   + " /\ " + \
+    mar8BPI13_precendence   + " /\ " + \
+    "[]( ( \"12\" -> X(( !(\"12\") U \"5\" )))) "  + " /\ " + \
+    mar8BPI13_chain_precedence  + " /\ " + \
+    "( ( !( \"5\" ) U \"1\" ) ) /\ ( ( \"5\" -> X( ( !( \"5\" ) U \"1\" ) ) ) ) ) /\ ! (\"5\" )" + " /\ " + \
+    mar8BPI13_choice + " /\ " + \
+    "[]( ( \"12\" -> X(( !(\"12\") U \"3\" )))) " + " /\ " + \
+    "[]( ( X( \"12\"  ) -> \"3\" ) )/\ ! (\"12\"  )" + " /\ " + \
+    mar8BPI13_chain_responce + " /\ " + \
+    "( ( !( \"12\" ) U \"1\" ) ) /\ ( ( \"12\" -> X( ( !( \"12\" ) U \"1\" ) ) ) ) ) /\ ! (\"12\" )"
+
+mar8BPI13_responce = "[]( ( \"1\" -> <>( \"6\" ) ) )"  #1 to 6
+formula_HELPDESK_mined_8_march_alpha_1_support_100_20_percent_of_testingtraces_all_formulas_declaleMiner = \
+    "[] ( ( \"3\" -> X( \"1\" ) ) )" + " /\ " + \
+    "[]( ( \"3\" -> X(( !(\"3\") U \"8\" )))) "+ " /\ " + \
+    "[]( ( \"3\" -> X(( !(\"3\") U \"6\" )))) "+ " /\ " + \
+    "( ( !( \"2\" ) U \"1\" ) ) /\ ( ( \"2\" -> X( ( !( \"2\" ) U \"1\" ) ) ) ) ) /\ ! (\"2\" )"+ " /\ " + \
+    "( <> ( \"1\" ) \/ <>( \"8\" ) )" + " /\ " + \
+    mar8BPI13_responce + " /\ " + \
+    "[] ( ( \"2\" -> X( \"6\" ) ) )"  + " /\ " + \
+    "[]( ( \"8\" -> <>( \"6\" ) ) )" + " /\ " + \
+    "[]( ( \"9\" -> <>( \"6\" ) ) )" + " /\ " + \
+    "( ( !( \"2\" ) U \"9\" ) ) /\ ( ( \"2\" -> X( ( !( \"2\" ) U \"9\" ) ) ) ) ) /\ ! (\"2\" )"  + " /\ " + \
+    "[]( ( X( \"2\"  ) -> \"8\" ) )/\ ! (\"2\"  )"
+
+
 def verify_formula_as_compliant(trace, prefix = 0):
     trace_new = gateway.jvm.java.util.ArrayList()
     for i in range(prefix, len(trace)): #prefix_size_fed,

@@ -47,6 +47,11 @@ only_compliant = True
 lines, lines_t, lines_t2, lines_t3, maxlen, chars, char_indices,divisor, divisor2, divisor3, predict_size,target_indices_char = prepare_testing_data(eventlog, only_compliant)
 lines, lines_t, lines_t2, lines_t3 = selectFormulaVerifiedTraces(lines, lines_t, lines_t2, lines_t3)
 
+# lines = lines[0:300]
+# lines_t= lines_t[0:300]
+# lines_t2=lines_t2[0:300]
+# lines_t3=lines_t3[0:300]
+
 #this is the beam stack size, means how many "best" alternatives will be stored
 one_ahead_gt = []
 one_ahead_pred = []

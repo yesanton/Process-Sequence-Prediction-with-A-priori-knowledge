@@ -319,6 +319,15 @@ for i, sentence in enumerate(sentences):
     y_t[i] = next_t/divisor
     np.set_printoptions(threshold=np.nan)
 
+
+import tensorflow as tf
+from keras.backend.tensorflow_backend import set_session
+config = tf.ConfigProto()
+config.gpu_options.per_process_gpu_memory_fraction = 0.5
+set_session(tf.Session(config=config))
+
+
+
 # build the model: 
 print('Build model...')
 main_input = Input(shape=(maxlen, num_features), name='main_input')

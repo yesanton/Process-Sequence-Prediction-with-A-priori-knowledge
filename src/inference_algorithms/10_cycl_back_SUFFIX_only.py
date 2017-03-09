@@ -39,7 +39,9 @@ import time
 start_time = time.time()
 
 only_compliant = True
-lines, lines_t, lines_t2, lines_t3, maxlen, chars, char_indices,divisor, divisor2, divisor3, predict_size,target_indices_char = prepare_testing_data(eventlog, only_compliant)
+lines, lines_t, lines_t2, lines_t3, maxlen, chars, char_indices,divisor, divisor2, \
+    divisor3, predict_size,target_indices_char,target_char_indices = \
+        prepare_testing_data(eventlog, only_compliant)
 
 
 #this is the beam stack size, means how many "best" alternatives will be stored
@@ -101,27 +103,32 @@ with open('../output_files/results/suffix_and_remaining_time10_%s' % eventlog, '
                 y_char = y[0][0]
                 y_t = y[1][0][0]
 
-                stop_symbol_probability_amplifier_current = amplify(search_tree_root.cropped_line)
+                stop_symbol_probability_amplifier_current, start_of_the_cycle_symbol = amplify(search_tree_root.cropped_line)
 
-                prediction = getSymbolAmpl(y_char,target_indices_char, stop_symbol_probability_amplifier_current) # undo one-hot encoding
+
                 #cropped_line += prediction
                 if y_t<0:
                     y_t=0
                 #TODO not normalizing here seems like a bug
                 cropped_times.append(y_t)
 
+                ma = False
+                for i in range(beam_size):
+                    prediction = getSymbolAmpl(y_char, target_indices_char,target_char_indices,start_of_the_cycle_symbol,
+                                               stop_symbol_probability_amplifier_current,i)  # undo one-hot encoding
 
+                    if prediction == '!': # end of case was just predicted, therefore, stop predicting further into the future
+                        if verify_formula_as_compliant(search_tree_root.cropped_line, prefix_size) == True:
+                            one_ahead_pred.append(search_tree_root.total_predicted_time)
+                            one_ahead_gt.append(ground_truth_t)
+                            print('! predicted, end case')
+                            ma = True
+                            break
 
-
-                if prediction == '!': # end of case was just predicted, therefore, stop predicting further into the future
-                    if verify_formula_as_compliant(search_tree_root.cropped_line, prefix_size) == True:
-                        one_ahead_pred.append(search_tree_root.total_predicted_time)
-                        one_ahead_gt.append(ground_truth_t)
-                        print('! predicted, end case')
-                        break
-                    else:
-                        prediction_end_reached = True;
-
+                        else:
+                            prediction_end_reached = True;
+                if ma:
+                    break
                 #if the end of prediction was not reached we continue as always, and then function :choose_next_top_descendant: will
                 #search for future prediction
 
@@ -132,9 +139,14 @@ with open('../output_files/results/suffix_and_remaining_time10_%s' % eventlog, '
 
                     for i in range(beam_size):
 
-                        temp_prediction = getSymbolAmpl(y_char, target_indices_char, i)
+                        temp_prediction = getSymbolAmpl(y_char, target_indices_char,
+                                                        target_char_indices,
+                                                        start_of_the_cycle_symbol,
+                                                        stop_symbol_probability_amplifier_current, i)
+
                         temp_cropped_line = search_tree_root.cropped_line + temp_prediction
 
+                        #this means that we found the end in one of the alternatives.
 
 
                         temp_total_predicted_time = search_tree_root.total_predicted_time + y_t

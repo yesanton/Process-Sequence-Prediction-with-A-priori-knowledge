@@ -187,9 +187,12 @@ three_ahead_pred = []
 
 lines, lines_t, lines_t2, lines_t3 = selectFormulaVerifiedTraces(lines, lines_t, lines_t2, lines_t3)
 
+# lines = lines[0:300]
+# lines_t= lines_t[0:300]
+# lines_t2=lines_t2[0:300]
+# lines_t3=lines_t3[0:300]
 
-
-with open('output_files/results/suffix_and_remaining_time0_%s' % eventlog, 'wb') as csvfile:
+with open('../output_files/results/suffix_and_remaining_time0_%s' % eventlog, 'wb') as csvfile:
     spamwriter = csv.writer(csvfile, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
     spamwriter.writerow(["Prefix length", "Groud truth", "Predicted", "Levenshtein", "Damerau", "Jaccard", "Ground truth times", "Predicted times", "RMSE", "MAE", "Median AE"])
     for prefix_size in range(prefix_size_pred_from, prefix_size_pred_to): #prefix_size_fed,prefix_size_fed+1

@@ -90,23 +90,29 @@ def outputPrefixLe(eventlogs, prefixLessThan_orEqual = 0, prefixMoreEqal = 0, nu
 
     traces_wrong = 0
     absolute_dis_DL = 0
-    for i in range(number_logs):
-        csvfile = open('output_files/results/suffix_and_remaining_time' + str(i) + '_%s' % eventlog, 'r')
+    for i in range(8,12):#number_logs):
+        csvfile = open('output_files/results/results_march8_suffixOnlyBPI13/suffix_and_remaining_time' + str(i) + '_%s' % eventlog, 'r')
         r = unicodecsv.reader(csvfile ,encoding='utf-8')
         r.next() # header
         vals = dict()
+        lens = dict()
+
 
         average_trace_length = 0
 
         bleu_abs = 0
         damerau = 0
         count = 0
+
+        lensOfGroundTruthDifferentPrefixesLengths = list()
+        lensOfGroundTruthDifferentPrefixesLengthsDICT = list()
         for row in r:
             if prefixLessThan_orEqual != 0 and not ((len(row[1]) + int(row[0])) <=  prefixLessThan_orEqual):
                 continue
             if prefixMoreEqal != 0 and not ((len(row[1]) + int(row[0])) >= prefixMoreEqal):
                 continue
             l = list()
+            len1 = list()
             count += 1
             if False:#float(row[4]) < 0.00001:
                 #here means that the traces are totally different
@@ -116,16 +122,35 @@ def outputPrefixLe(eventlogs, prefixLessThan_orEqual = 0, prefixMoreEqal = 0, nu
                 damerau += float(row[4])
             if row[0] in vals.keys():
                 l = vals.get(row[0])
-            if len(row[1])==0 and len(row[2])==0:
-                l.append(1)
-            elif len(row[1])==0 and len(row[2])>0:
-                l.append(0)
-            elif len(row[1])>0 and len(row[2])==0:
-                l.append(0)
-            else:
-                l.append(int(row[1][0]==row[2][0]))
+            elif lensOfGroundTruthDifferentPrefixesLengths:
+                lensOfGroundTruthDifferentPrefixesLengthsDICT.append(
+                    str(int(row[0])-1)+" : " +
+                    str(sum(lensOfGroundTruthDifferentPrefixesLengths) /
+                        len(lensOfGroundTruthDifferentPrefixesLengths)) + " numOf: " + \
+                        str(len(lensOfGroundTruthDifferentPrefixesLengths)))
+                del lensOfGroundTruthDifferentPrefixesLengths[:]
+
+
+            if row[0] in lens.keys():
+                len1 = lens.get(row[0])
+
+            lensOfGroundTruthDifferentPrefixesLengths.append(len(row[1]))
+            l.append(float(row[4]))
+            len1.append(len(row[2]))
+            # if len(row[1])==0 and len(row[2])==0:
+            #     l.append(1)
+            # elif len(row[1])==0 and len(row[2])>0:
+            #     l.append(0)
+            # elif len(row[1])>0 and len(row[2])==0:
+            #     l.append(0)
+            # else:
+            #     l.append(int(row[1][0]==row[2][0]))
             vals[row[0]] = l
+            lens[row[0]] = len1
             #print(vals)
+
+
+
 
             # str1 = row[1]
             # str2 = row[2]
@@ -144,6 +169,12 @@ def outputPrefixLe(eventlogs, prefixLessThan_orEqual = 0, prefixMoreEqal = 0, nu
             if not mark:
                 averageTraceLengthsGroundTruth += len(row[1])
 
+        lensOfGroundTruthDifferentPrefixesLengthsDICT.append(
+            str(row[0]) + " : " +
+            str(sum(lensOfGroundTruthDifferentPrefixesLengths) /
+                len(lensOfGroundTruthDifferentPrefixesLengths)) + " numOf: " + \
+                str(len(lensOfGroundTruthDifferentPrefixesLengths)))
+
         if not mark:
             mark = True
             res_dict['average trace lenght ground truth'] = averageTraceLengthsGroundTruth / count
@@ -153,6 +184,7 @@ def outputPrefixLe(eventlogs, prefixLessThan_orEqual = 0, prefixMoreEqal = 0, nu
 
 
         l2 = list()
+        lens2 = list()
         for k in vals.keys():
             #print('{}: {}'.format(k, vals[k]))
             l2.extend(vals[k])
@@ -161,6 +193,16 @@ def outputPrefixLe(eventlogs, prefixLessThan_orEqual = 0, prefixMoreEqal = 0, nu
                 res_dict[k] = ['{:6.5f}'.format(res)]
             else:
                 res_dict[k].append('{:6.5f}'.format(res))
+
+            lens2.extend(lens[k])
+            lenRes = sum(lens[k]) / len(lens[k])
+            mStr = str(k) + "_aL"
+            if mStr not in res_dict:
+                res_dict[mStr] = ['{:6.5f}'.format(lenRes)]
+            else:
+                res_dict[mStr].append('{:6.5f}'.format(lenRes))
+
+        res_dict["len_ground_truth_with_resp_to_prefixes"] = lensOfGroundTruthDifferentPrefixesLengthsDICT
         res_dict['total'].append('{:6.5f}'.format(sum(l2)/len(l2)))
         res_dict['damerau'].append('{:6.5f}'.format(damerau/count))
         res_dict['wrong'].append(traces_wrong)
@@ -179,7 +221,7 @@ def outputPrefixLe(eventlogs, prefixLessThan_orEqual = 0, prefixMoreEqal = 0, nu
 
 
 logs = ["env_permit.csv","helpdesk.csv","bpi_11.csv","bpi_12_w_no_repeat.csv","bpi_13_incidents.csv","bpi_12_w.csv","bpi_17.csv"]
-logs = ["bpi_17.csv"]
+logs = ["bpi_13_incidents.csv"]
 for eventlog in logs:
     res = outputPrefixLe(eventlog,0,0)
     print "For event log : ", eventlog
@@ -187,12 +229,12 @@ for eventlog in logs:
     for key in res:
         if not (key == 'total' or key == 'damerau' or key == 'average trace lenght ground truth'
                 or key == 'traces' or key == "wrong" or key == 'abs_err' or key == 'bleu'):
-            print key, ' === ', string.join(res[key], ' - ')
+            print key, ' === ', string.join(res[key], '   ')
 
     print 'total', ' === ', string.join(res['total'])
     print 'damerau', ' === ', string.join(res['damerau'])
 
-    print 'average trace lenght === ', string.join(averageTraceLengths, ' - ')
+    print 'average trace lenght === ', string.join(averageTraceLengths, '  ')
     print 'average trace length ground truth === ', res['average trace lenght ground truth']
     print 'number of totaly wrong traces === ', res['wrong']
     print 'absolute === ', res['abs_err']

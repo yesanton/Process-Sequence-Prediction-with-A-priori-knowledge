@@ -122,7 +122,7 @@ def prepare_testing_data(eventlog, only_compliant = False):
     predict_size = maxlen
 
 
-    return lines, lines_t, lines_t2, lines_t3, maxlen, chars, char_indices,divisor, divisor2, divisor3, predict_size,target_indices_char
+    return lines, lines_t, lines_t2, lines_t3, maxlen, chars, char_indices,divisor, divisor2, divisor3, predict_size,target_indices_char,target_char_indices
 
 
 def selectFormulaVerifiedTraces(lines, lines_t, lines_t2, lines_t3, prefix = 0):
@@ -168,9 +168,12 @@ def getSymbol(predictions, target_indices_char, ith_best=0):
     return target_indices_char[i]
 
 #modify to be able to get second best prediction
-def getSymbolAmpl(predictions, target_indices_char,  stop_symbol_probability_amplifier_current,  ith_best = 0):
-    predictions[0] =  predictions[0] * stop_symbol_probability_amplifier_current
-    i = np.argsort(predictions)[len(predictions) - ith_best - 1]
+def getSymbolAmpl(predictions, target_indices_char,target_char_indices, start_of_the_cycle_symbol, stop_symbol_probability_amplifier_current, ith_best = 0):
+    a_pred = list(predictions)
+    if start_of_the_cycle_symbol in target_char_indices:
+        place_of_starting_symbol = target_char_indices[start_of_the_cycle_symbol]
+        a_pred[place_of_starting_symbol] =  a_pred[place_of_starting_symbol] / stop_symbol_probability_amplifier_current
+    i = np.argsort(a_pred)[len(a_pred) - ith_best - 1]
     return target_indices_char[i]
 
 
@@ -187,12 +190,12 @@ def amplify(s):
         str_rep = list_of_rep[-1][0]
         if s.endswith(str_rep):
 #            return np.math.exp(np.math.pow(list_of_rep[-1][-1],3))
-            return np.math.exp(list_of_rep[-1][-1])
+            return np.math.exp(list_of_rep[-1][-1]), list_of_rep[-1][0][0]
             # return np.math.pow(list_of_rep[-1][-1],2)
             #return list_of_rep[-1][-1]
         else:
-            return 1
-    return 1
+            return 1, list_of_rep[-1][0][0]
+    return 1, " "
 
 
 #the match.group(0) finds the whole substring that contains 1+ cycles
