@@ -189,7 +189,7 @@ def amplify(s):
     if list_of_rep:
         str_rep = list_of_rep[-1][0]
         if s.endswith(str_rep):
-#            return np.math.exp(np.math.pow(list_of_rep[-1][-1],3))
+            #return np.math.exp(np.math.pow(list_of_rep[-1][-1],3)), list_of_rep[-1][0][0]
             return np.math.exp(list_of_rep[-1][-1]), list_of_rep[-1][0][0]
             # return np.math.pow(list_of_rep[-1][-1],2)
             #return list_of_rep[-1][-1]

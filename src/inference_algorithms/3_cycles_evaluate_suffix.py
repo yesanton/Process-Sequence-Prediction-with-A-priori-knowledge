@@ -160,7 +160,7 @@ def encode(sentence, times, times3, maxlen=maxlen):
 
 #find cycles and modify the probability functionality goes here
 stop_symbol_probability_amplifier_current = 1
-
+start_of_the_cycle_symbol = " "
 
 one_ahead_gt = []
 one_ahead_pred = []
@@ -171,22 +171,18 @@ two_ahead_pred = []
 three_ahead_gt = []
 three_ahead_pred = []
 
+lines_s, lines_t_s, lines_t2_s, lines_t3_s = selectFormulaVerifiedTraces(lines, lines_t, lines_t2, lines_t3)
 
-
-lines, lines_t, lines_t2, lines_t3 = selectFormulaVerifiedTraces(lines, lines_t, lines_t2, lines_t3)
-#
-# lines = lines[0:300]
-# lines_t= lines_t[0:300]
-# lines_t2=lines_t2[0:300]
-# lines_t3=lines_t3[0:300]
-
-
-with open('../output_files/results/suffix_and_remaining_time3_%s' % eventlog, 'wb') as csvfile:
+with open('../output_files/results/suffix_and_remaining_time9_%s' % eventlog, 'wb') as csvfile:
     spamwriter = csv.writer(csvfile, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
     spamwriter.writerow(["Prefix length", "Groud truth", "Predicted", "Levenshtein", "Damerau", "Jaccard", "Ground truth times", "Predicted times", "RMSE", "MAE", "Median AE"])
     for prefix_size in range(prefix_size_pred_from, prefix_size_pred_to):
-        print(prefix_size)
-        for line, times, times2, times3 in izip(lines, lines_t, lines_t2, lines_t3):
+
+
+        print("prefix size: " + str(prefix_size))
+        print("formulas verifited: " + str(len(lines_s)) + " out of : " + str(len(lines)))
+
+        for line, times, times2, times3 in izip(lines_s, lines_t_s, lines_t2_s, lines_t3_s):
             times.append(0)
             cropped_line = ''.join(line[:prefix_size])
             cropped_times = times[:prefix_size]
@@ -205,12 +201,13 @@ with open('../output_files/results/suffix_and_remaining_time3_%s' % eventlog, 'w
                 # split predictions into seperate activity and time predictions
                 y_char = y[0][0]
                 y_t = y[1][0][0]
-                prediction = getSymbolAmpl(y_char,target_indices_char, stop_symbol_probability_amplifier_current) # undo one-hot encoding
+                prediction = getSymbolAmpl(y_char,target_indices_char,target_char_indices,
+                                           start_of_the_cycle_symbol,
+                                           stop_symbol_probability_amplifier_current) # undo one-hot encoding
                 cropped_line += prediction
 
 
-                stop_symbol_probability_amplifier_current = amplify(cropped_line)
-
+                stop_symbol_probability_amplifier_current, start_of_the_cycle_symbol = amplify(cropped_line)
 
 
                 if y_t<0:

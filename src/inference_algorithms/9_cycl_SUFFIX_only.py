@@ -160,7 +160,7 @@ def encode(sentence, times, times3, maxlen=maxlen):
 
 #find cycles and modify the probability functionality goes here
 stop_symbol_probability_amplifier_current = 1
-
+start_of_the_cycle_symbol = " "
 
 one_ahead_gt = []
 one_ahead_pred = []
@@ -200,12 +200,13 @@ with open('../output_files/results/suffix_and_remaining_time9_%s' % eventlog, 'w
                 # split predictions into seperate activity and time predictions
                 y_char = y[0][0]
                 y_t = y[1][0][0]
-                prediction = getSymbolAmpl(y_char,target_indices_char, stop_symbol_probability_amplifier_current) # undo one-hot encoding
+                prediction = getSymbolAmpl(y_char,target_indices_char,target_char_indices,
+                                           start_of_the_cycle_symbol,
+                                           stop_symbol_probability_amplifier_current) # undo one-hot encoding
                 cropped_line += prediction
 
 
-                stop_symbol_probability_amplifier_current = amplify(cropped_line)
-
+                stop_symbol_probability_amplifier_current, start_of_the_cycle_symbol = amplify(cropped_line)
 
 
                 if y_t<0:
