@@ -43,8 +43,10 @@ start_time = time.time()
 
 
 only_compliant = True
-lines, lines_t, lines_t2, lines_t3, maxlen, chars, char_indices,divisor, divisor2, divisor3, predict_size,target_indices_char = prepare_testing_data(eventlog, only_compliant)
-lines, lines_t, lines_t2, lines_t3 = selectFormulaVerifiedTraces(lines, lines_t, lines_t2, lines_t3)
+lines, lines_t, lines_t2, lines_t3, maxlen, chars, char_indices,divisor, divisor2, \
+    divisor3, predict_size,target_indices_char,target_char_indices\
+    = prepare_testing_data(eventlog, only_compliant)
+
 
 #
 # lines = lines[0:300]
@@ -69,6 +71,7 @@ class NodePrediction():
         self.total_predicted_time = total_predicted_time
         self.probability_of = probability_of
 
+lines_s, lines_t_s, lines_t2_s, lines_t3_s = selectFormulaVerifiedTraces(lines, lines_t, lines_t2, lines_t3)
 
 # make predictions
 with open('../output_files/results/suffix_and_remaining_time5_%s' % eventlog, 'wb') as csvfile:
@@ -77,12 +80,12 @@ with open('../output_files/results/suffix_and_remaining_time5_%s' % eventlog, 'w
     for prefix_size in range(prefix_size_pred_from, prefix_size_pred_to):
         print(prefix_size)
 
-        # lines = lines[13:]
-        # lines_t = lines_t[13:]
-        # lines_t2 = lines_t2[13:]
-        # lines_t3 = lines_t3[13:]
 
-        for line, times, times2, times3 in izip(lines, lines_t, lines_t2, lines_t3):
+
+        print("prefix size: " + str(prefix_size))
+        print("formulas verifited: " + str(len(lines_s)) + " out of : " + str(len(lines)))
+        counterr = 0
+        for line, times, times2, times3 in izip(lines_s, lines_t_s, lines_t2_s, lines_t3_s):
             times.append(0)
             cropped_line = ''.join(line[:prefix_size])
             cropped_times = times[:prefix_size]
@@ -109,7 +112,7 @@ with open('../output_files/results/suffix_and_remaining_time5_%s' % eventlog, 'w
             queue_next_steps.put((-search_node_root.probability_of,search_node_root))
 
             queue_next_steps_future = PriorityQueue()
-
+            start_of_the_cycle_symbol = " "
             found_sattisfying_constraint = False
 
             current_beam_size = beam_size
@@ -143,14 +146,16 @@ with open('../output_files/results/suffix_and_remaining_time5_%s' % eventlog, 'w
                     cropped_times.append(y_t)
 
                     if not i == 0:
-                        stop_symbol_probability_amplifier_current =  amplify(temp_cropped_line)
+                        stop_symbol_probability_amplifier_current, start_of_the_cycle_symbol =  amplify(temp_cropped_line)
 
                     #in not reached, function :choose_next_top_descendant: will backtrack
                     y_t = y_t * divisor3
                     cropped_times3.append(cropped_times3[-1] + timedelta(seconds=y_t))
 
-                    for i in range(current_beam_size):
-                        temp_prediction = getSymbolAmpl(y_char, target_indices_char, stop_symbol_probability_amplifier_current, i)
+                    for j in range(current_beam_size):
+                        temp_prediction = getSymbolAmpl(y_char, target_indices_char,
+                                                        target_char_indices, start_of_the_cycle_symbol,
+                                                        stop_symbol_probability_amplifier_current, j)
 
                         if temp_prediction == '!':  # end of case was just predicted, therefore, stop predicting further into the future
                             if verify_formula_as_compliant(temp_cropped_line):
@@ -158,20 +163,28 @@ with open('../output_files/results/suffix_and_remaining_time5_%s' % eventlog, 'w
                                 one_ahead_gt.append(ground_truth_t)
                                 stop_symbol_probability_amplifier_current = 1
                                 print('! predicted, end case')
+                                queue_next_steps = PriorityQueue()
                                 break
                             else:
                                 continue
 
                         temp_cropped_line = current_prediction_premis.cropped_line + temp_prediction
                         temp_total_predicted_time = current_prediction_premis.total_predicted_time + y_t
-                        temp_state_data = encode(temp_cropped_line, cropped_times, cropped_times3, maxlen, chars, char_indices, divisor, divisor2)
-                        probability_this = np.sort(y_char)[len(y_char) - 1 - i]
+                        temp_state_data = encode(temp_cropped_line, cropped_times, cropped_times3,
+                                                 maxlen, chars, char_indices, divisor, divisor2)
+                        probability_this = np.sort(y_char)[len(y_char) - 1 - j]
 
-                        temp = NodePrediction(temp_state_data,temp_cropped_line, temp_total_predicted_time,current_prediction_premis.probability_of + np.log(probability_this))
+                        temp = NodePrediction(temp_state_data,temp_cropped_line,
+                                              temp_total_predicted_time,current_prediction_premis.probability_of
+                                              + np.log(probability_this))
                         queue_next_steps_future.put((-temp.probability_of, temp))
-
+                        # print str(counterr) + ' ' + str(i) + ' ' + str(k) \
+                        #       + ' ' + str(j) + ' ' + temp_cropped_line[prefix_size:]\
+                        #       + "     " + str(temp.probability_of)
                 queue_next_steps = queue_next_steps_future
                 queue_next_steps_future = PriorityQueue()
+
+            counterr += 1
 
             if current_prediction_premis == None:
                 print "Cannot find any trace that is compliant with formula given current beam size";
@@ -203,6 +216,8 @@ with open('../output_files/results/suffix_and_remaining_time5_%s' % eventlog, 'w
                 output.append(metrics.mean_absolute_error([ground_truth_t], [total_predicted_time]))
                 output.append(metrics.median_absolute_error([ground_truth_t], [total_predicted_time]))
                 spamwriter.writerow(output)
+
+
 
 
 
