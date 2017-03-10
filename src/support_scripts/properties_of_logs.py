@@ -9,7 +9,7 @@ import numpy as np
 from datetime import datetime, timedelta
 from src.shared_variables import getUnicode_fromInt
 from src.support_scripts.prepare_data import repetitions
-
+import statistics
 onlyfiles = [f for f in listdir("../../data/") if isfile(join("../../data/", f))]
 
 
@@ -102,10 +102,12 @@ for i in range(len(onlyfiles)):
     number = 0
     numberOfCycles = 0
     averageLengthOfCycle = 0
+    lenMedian = []
     for j in range(len(lines)):
         line = lines[j]
         rep = list(repetitions(line))
         number += len(lines[j])
+        lenMedian.append(len(lines[j]))
         for k in range (len(rep)):
             numberOfCycles += 1
             averageLengthOfCycle += rep[k][1]
@@ -122,4 +124,5 @@ for i in range(len(onlyfiles)):
     print "```Nubmer of cases: " + str (len(target_indices_char))
     print "`````Average number of cycles per trace: " + str(averageNumberOfCyclesPerTrace)
     print "`````Average length of the cycle: " + str(averageLengthOfCycle)
+    print "``@@`` Median length of the trace:  " + str(statistics.median(lenMedian))
     print "_______________________________________________________________________________"
