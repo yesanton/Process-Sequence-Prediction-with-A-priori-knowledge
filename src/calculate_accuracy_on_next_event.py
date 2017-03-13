@@ -8,77 +8,82 @@ Author: Niek Tax
 from __future__ import division
 
 import string
-
+import csv
 import unicodecsv
 from jellyfish._jellyfish import damerau_levenshtein_distance
 import nltk
-from src.shared_variables import eventlog
+
+
+
 
 averageTraceLengths = []
 
-def output(eventlogs, number_logs = 6):
-    res_dict = dict()
-    res_dict['total'] = []
-    res_dict['damerau'] = []
-    res_dict['wrong'] = []
-    averageTraceLengthsGroundTruth = 0
-    mark = False
+resss = [[]]
 
-    for i in range(number_logs):
-        csvfile = open('output_files/results/suffix_and_remaining_time' + str(i) + '_%s' % eventlog, 'r')
-        r = unicodecsv.reader(csvfile ,encoding='utf-8')
-        r.next() # header
-        vals = dict()
+#
+# def output(eventlogs, number_logs = 6):
+#     res_dict = dict()
+#     res_dict['total'] = []
+#     res_dict['damerau'] = []
+#     res_dict['wrong'] = []
+#     averageTraceLengthsGroundTruth = 0
+#     mark = False
+#
+#     for i in range(number_logs):
+#         csvfile = open('output_files/results/suffix_and_remaining_time' + str(i) + '_%s' % eventlog, 'r')
+#         r = unicodecsv.reader(csvfile ,encoding='utf-8')
+#         r.next() # header
+#         vals = dict()
+#
+#         average_trace_length = 0
+#
+#         damerau = 0
+#         count = 0
+#         for row in r:
+#             l = list()
+#             count += 1
+#             damerau += float(row[4])
+#             if row[0] in vals.keys():
+#                 l = vals.get(row[0])
+#             if len(row[1])==0 and len(row[2])==0:
+#                 l.append(1)
+#             elif len(row[1])==0 and len(row[2])>0:
+#                 l.append(0)
+#             elif len(row[1])>0 and len(row[2])==0:
+#                 l.append(0)
+#             else:
+#                 l.append(int(row[1][0]==row[2][0]))
+#             vals[row[0]] = l
+#             #print(vals)
+#
+#             average_trace_length += len(row[2])
+#
+#             if not mark:
+#                 averageTraceLengthsGroundTruth += len(row[1])
+#
+#         if not mark:
+#             mark = True
+#             res_dict['average trace lenght ground truth'] = averageTraceLengthsGroundTruth / count
+#             res_dict['traces'] = count
+#
+#         averageTraceLengths.append(str(float(average_trace_length)/count))
+#
+#
+#         l2 = list()
+#         for k in vals.keys():
+#             #print('{}: {}'.format(k, vals[k]))
+#             l2.extend(vals[k])
+#             res = sum(vals[k])/len(vals[k])
+#             if k not in res_dict:
+#                 res_dict[k] = ['{:6.5f}'.format(res)]
+#             else:
+#                 res_dict[k].append('{:6.5f}'.format(res))
+#         res_dict['total'].append('{:6.5f}'.format(sum(l2)/len(l2)))
+#         res_dict['damerau'].append('{:6.5f}'.format(damerau/count))
+#
+#     return res_dict
 
-        average_trace_length = 0
-
-        damerau = 0
-        count = 0
-        for row in r:
-            l = list()
-            count += 1
-            damerau += float(row[4])
-            if row[0] in vals.keys():
-                l = vals.get(row[0])
-            if len(row[1])==0 and len(row[2])==0:
-                l.append(1)
-            elif len(row[1])==0 and len(row[2])>0:
-                l.append(0)
-            elif len(row[1])>0 and len(row[2])==0:
-                l.append(0)
-            else:
-                l.append(int(row[1][0]==row[2][0]))
-            vals[row[0]] = l
-            #print(vals)
-
-            average_trace_length += len(row[2])
-
-            if not mark:
-                averageTraceLengthsGroundTruth += len(row[1])
-
-        if not mark:
-            mark = True
-            res_dict['average trace lenght ground truth'] = averageTraceLengthsGroundTruth / count
-            res_dict['traces'] = count
-
-        averageTraceLengths.append(str(float(average_trace_length)/count))
-
-
-        l2 = list()
-        for k in vals.keys():
-            #print('{}: {}'.format(k, vals[k]))
-            l2.extend(vals[k])
-            res = sum(vals[k])/len(vals[k])
-            if k not in res_dict:
-                res_dict[k] = ['{:6.5f}'.format(res)]
-            else:
-                res_dict[k].append('{:6.5f}'.format(res))
-        res_dict['total'].append('{:6.5f}'.format(sum(l2)/len(l2)))
-        res_dict['damerau'].append('{:6.5f}'.format(damerau/count))
-
-    return res_dict
-
-def outputPrefixLe(eventlogs, prefixLessThan_orEqual = 0, prefixMoreEqal = 0, number_logs = 6):
+def outputPrefixLe(eventlogs, mode = 'STRONG', prefixLessThan_orEqual = 0, prefixMoreEqal = 0, number_logs = 6):
     res_dict = dict()
     res_dict['total'] = []
     res_dict['damerau'] = []
@@ -90,8 +95,9 @@ def outputPrefixLe(eventlogs, prefixLessThan_orEqual = 0, prefixMoreEqal = 0, nu
 
     traces_wrong = 0
     absolute_dis_DL = 0
-    for i in range(8,12):#number_logs):
-        csvfile = open('output_files/results/results_march8_suffixOnlyBPI13/suffix_and_remaining_time' + str(i) + '_%s' % eventlog, 'r')
+    mark2 = True
+    for i in range(0,4):#number_logs):
+        csvfile = open('output_files/results/' + mode + '/suffix_and_remaining_time' + str(i) + '_%s' % eventlog, 'r')
         r = unicodecsv.reader(csvfile ,encoding='utf-8')
         r.next() # header
         vals = dict()
@@ -106,6 +112,7 @@ def outputPrefixLe(eventlogs, prefixLessThan_orEqual = 0, prefixMoreEqal = 0, nu
 
         lensOfGroundTruthDifferentPrefixesLengths = list()
         lensOfGroundTruthDifferentPrefixesLengthsDICT = list()
+
         for row in r:
             if prefixLessThan_orEqual != 0 and not ((len(row[1]) + int(row[0])) <=  prefixLessThan_orEqual):
                 continue
@@ -185,6 +192,9 @@ def outputPrefixLe(eventlogs, prefixLessThan_orEqual = 0, prefixMoreEqal = 0, nu
 
         l2 = list()
         lens2 = list()
+
+        resOUT1 = []
+        resOUT2 = []
         for k in vals.keys():
             #print('{}: {}'.format(k, vals[k]))
             l2.extend(vals[k])
@@ -196,11 +206,19 @@ def outputPrefixLe(eventlogs, prefixLessThan_orEqual = 0, prefixMoreEqal = 0, nu
 
             lens2.extend(lens[k])
             lenRes = sum(lens[k]) / len(lens[k])
-            mStr = str(k) + "_aL"
+            mStr = str(k) + "_avLen"
             if mStr not in res_dict:
                 res_dict[mStr] = ['{:6.5f}'.format(lenRes)]
             else:
                 res_dict[mStr].append('{:6.5f}'.format(lenRes))
+
+            resOUT1.append(k)
+            resOUT2.append(mStr)
+
+        if mark2:
+            resss.append(resOUT1)
+            resss.append(resOUT2)
+            mark2 = False
 
         res_dict["len_ground_truth_with_resp_to_prefixes"] = lensOfGroundTruthDifferentPrefixesLengthsDICT
         res_dict['total'].append('{:6.5f}'.format(sum(l2)/len(l2)))
@@ -221,23 +239,67 @@ def outputPrefixLe(eventlogs, prefixLessThan_orEqual = 0, prefixMoreEqal = 0, nu
 
 
 logs = ["env_permit.csv","helpdesk.csv","bpi_11.csv","bpi_12_w_no_repeat.csv","bpi_13_incidents.csv","bpi_12_w.csv","bpi_17.csv"]
-logs = ["bpi_13_incidents.csv"]
-for eventlog in logs:
-    res = outputPrefixLe(eventlog,0,0)
-    print "For event log : ", eventlog
-    print "Unmod pred  --  backtracking  --  protracking -- cycles -- cycles#back -- cycles#pro"
-    for key in res:
-        if not (key == 'total' or key == 'damerau' or key == 'average trace lenght ground truth'
-                or key == 'traces' or key == "wrong" or key == 'abs_err' or key == 'bleu'):
-            print key, ' === ', string.join(res[key], '   ')
+logs = ["env_permit.csv", "helpdesk.csv","bpi_11.csv","bpi_12_w.csv","bpi_13_incidents.csv","bpi_17.csv"]
+with open('output_files/table_all_results.csv', 'wb') as csvfile:
+    spamwriter = csv.writer(csvfile, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
+    for eventlog in logs:
+        for mode in ['WEAK', 'STRONG']:
+            output = []
+            output.append(eventlog)
+            output.append(mode)
+            spamwriter.writerow(output)
 
-    print 'total', ' === ', string.join(res['total'])
-    print 'damerau', ' === ', string.join(res['damerau'])
+            res = outputPrefixLe(eventlog, mode, 0, 0)
 
-    print 'average trace lenght === ', string.join(averageTraceLengths, '  ')
-    print 'average trace length ground truth === ', res['average trace lenght ground truth']
-    print 'number of totaly wrong traces === ', res['wrong']
-    print 'absolute === ', res['abs_err']
-   # print 'BLEU SCORE === ', res['bleu']
-    print 'number of traces ===', res['traces']
+            for i in resss:
+                for j in i:
+                    output = []
+                    output.append(j)
+                    for k in res[j]:
+                        output.append(k)
+                    spamwriter.writerow(output)
+
+
+            print "For event log : ", eventlog, "  mode ", mode
+            print "Unmod pred  --  backtracking  --  protracking -- cycles -- cycles#back -- cycles#pro"
+            for key in res:
+                if not (key == 'total' or key == 'damerau' or key == 'average trace lenght ground truth'
+                        or key == 'traces' or key == "wrong" or key == 'abs_err' or key == 'bleu'):
+                    print key, ' === ', string.join(res[key], '   ')
+
+
+            print 'total', ' === ', string.join(res['total'])
+            print 'damerau', ' === ', string.join(res['damerau'])
+
+            output = []
+            output.append('ALL')
+            for i in res['damerau']:
+                output.append(i)
+            spamwriter.writerow(output)
+
+            print 'average trace lenght === ', string.join(averageTraceLengths, '  ')
+
+            output = []
+            output.append('av trace lengths')
+            for i in averageTraceLengths:
+                output.append(i)
+            spamwriter.writerow(output)
+
+
+            print 'average trace length ground truth === ', res['average trace lenght ground truth']
+
+
+            output = []
+            output.append('average trace lenght ground truth')
+            output.append(res['average trace lenght ground truth'])
+            spamwriter.writerow(output)
+
+            print 'number of totaly wrong traces === ', res['wrong']
+            print 'absolute === ', res['abs_err']
+           # print 'BLEU SCORE === ', res['bleu']
+            print 'number of traces ===', res['traces']
+
+            output = []
+            averageTraceLengths = []
+            resss = [[]]
 

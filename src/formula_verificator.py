@@ -7,7 +7,8 @@ Author: Anton Yeshchenko
 
 
 from py4j.java_gateway import JavaGateway
-from shared_variables import getInt_fromUnicode, formula
+from shared_variables import getInt_fromUnicode
+
 
 gateway = JavaGateway()                   # connect to the JVM
 random = gateway.jvm.java.util.Random()   # create a java.util.Random instance
@@ -156,7 +157,7 @@ print verificator_app.mama(10)
 
 
 
-def verify_formula_as_compliant(trace, prefix = 0):
+def verify_formula_as_compliant(trace,formula,  prefix = 0):
     trace_new = gateway.jvm.java.util.ArrayList()
     for i in range(prefix, len(trace)):
         trace_new.append(str(getInt_fromUnicode(trace[i])))

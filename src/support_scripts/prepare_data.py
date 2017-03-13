@@ -21,8 +21,8 @@ from src.formula_verificator import  verify_formula_as_compliant
 from src.shared_variables import getUnicode_fromInt
 
 
-def prepare_testing_data(eventlog, only_compliant = False):
-    csvfile = open('../../data/%s' % eventlog, 'r')
+def prepare_testing_data(eventlog):
+    csvfile = open('../data/%s' % eventlog, 'r')
     spamreader = csv.reader(csvfile, delimiter=',', quotechar='|')
     next(spamreader, None)  # skip the headers
 
@@ -125,14 +125,14 @@ def prepare_testing_data(eventlog, only_compliant = False):
     return lines, lines_t, lines_t2, lines_t3, maxlen, chars, char_indices,divisor, divisor2, divisor3, predict_size,target_indices_char,target_char_indices
 
 
-def selectFormulaVerifiedTraces(lines, lines_t, lines_t2, lines_t3, prefix = 0):
+def selectFormulaVerifiedTraces(lines, lines_t, lines_t2, lines_t3, formula,  prefix = 0):
     # select only lines with formula verified
     lines_v = []
     lines_t_v = []
     lines_t2_v = []
     lines_t3_v = []
     for line, times, times2, times3 in izip(lines, lines_t, lines_t2, lines_t3):
-        if verify_formula_as_compliant(line,prefix):
+        if verify_formula_as_compliant(line,formula,prefix):
             lines_v.append(line)
             lines_t_v.append(times)
             lines_t2_v.append(times2)
