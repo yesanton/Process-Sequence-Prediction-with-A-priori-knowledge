@@ -52,6 +52,7 @@ The results will be displayed in console as well as the table-like file will be 
 Supplementary:
 S1. The properties_of_logs.py can be run in order to collect general information about the log (that are numbe rof cycles, alphabet size e.c.)
 S2. graph_results.py used to generate graphs on results
+S3. LTL formulas can be discovered using 'Declare miner' plugin in ProM.
 
 ## Contributors
 
