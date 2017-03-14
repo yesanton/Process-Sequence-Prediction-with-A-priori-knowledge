@@ -2,7 +2,7 @@
 
 ## Synopsis
 
-It is the source code to support experiments performed for the article "Leveraging A-priori Knowledge in Predictive Business Process Monitoring" by Chiara Di Francescomarino\inst{1} \and Chiara Ghidini\inst{1} \and Fabrizio Maria Maggi\inst{2} \and Giulio Petrucci\inst{1,3} \and Anton Yeshchenko\inst{2}
+It is the source code to support experiments performed for the article "Leveraging A-priori Knowledge in Predictive Business Process Monitoring" by Chiara Di Francescomarino and Chiara Ghidini and Fabrizio Maria Maggi and Giulio Petrucci and Anton Yeshchenko
 
 Code can be used to train LSTM models to predict sequences of next events. Also, different prediction techniques available:
 
