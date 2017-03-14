@@ -35,7 +35,6 @@ Put the file in the data folder.
 4. In the file experiment_runner.py you can following:
 - Use function 'train' to train the model
 - In order to run corresponding algorithms for predictions use either of the functions:
-
 - _6_evaluate_beseline_SUFFIX_only.runExperiments
 - _9_cycl_SUFFIX_only.runExperiments
 - _10_cycl_back_SUFFIX_only.runExperiments
