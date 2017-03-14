@@ -12,7 +12,7 @@ from src.inference_algorithms import _11_cycl_pro_SUFFIX_only
 from src.inference_algorithms import _6_evaluate_beseline_SUFFIX_only
 from src.inference_algorithms import _9_cycl_SUFFIX_only
 from src.shared_variables import activateSettings
-
+from src.train import train
 
 formula1 = "WEAK"
 formula2 = "STRONG"
@@ -21,6 +21,7 @@ formula_used = formula1
 
 logNumber = 2
 
+#train()
 
 #_6_evaluate_beseline_SUFFIX_only.runExperiments()
 #_9_cycl_SUFFIX_only.py.runExperiments()
