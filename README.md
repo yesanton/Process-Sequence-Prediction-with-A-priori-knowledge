@@ -2,20 +2,22 @@
 
 ## Synopsis
 
-At the top of the file there should be a short introduction and/ or overview that explains **what** the project is. This description should match descriptions added for package managers (Gemspec, package.json, etc.)
+It is the source code to support experiments performed for the article "Leveraging A-priori Knowledge in Predictive Business Process Monitoring" by Chiara Di Francescomarino\inst{1} \and Chiara Ghidini\inst{1} \and Fabrizio Maria Maggi\inst{2} \and Giulio Petrucci\inst{1,3} \and Anton Yeshchenko\inst{2}
 
-## Code Example
+Code can be used to train LSTM models to predict sequences of next events. Also, different prediction techniques available:
 
-Show what the library does as concisely as possible, developers should be able to figure out **how** your project solves their problem by looking at the code example. Make sure the API you are showing off is obvious, and that your code is short and concise.
+0. Baseline
+1. Prediction with NoCycle - algorithm that prevents the loops in the output trace. It is useful when the training log contains more than 0.5 cycles per trace.
+2. Prediction with Apriori knowledge - algorithm that exploits Apriori knowledge (states as LTL formula), in order to make more accurate, compliant predictions.
 
-## Motivation
 
-A short description of the motivation behind the creation and maintenance of the project. This should explain **why** the project exists.
 
 ## Running the project
 
 The project was written in Python (ver: 2.7.12), with Pycharm IDE. Also, for LTL formula check module you
-will need to run Java code in background (tested on JDK ver: 1.8).
+will need to run Java code in background (JDK ver: 1.8).
+
+Keras (ver: 1.1.2) is used alongside with Tensorflow (ver: 0.12.0-rc0) backend.
 
 ## Tests
 
@@ -47,12 +49,17 @@ In order to run corresponding algorithms for predictions.
 4. Run calculate_accuracy_on_next_event.py file in order to run evaluation of the algorithms.
 The results will be displayed in console as well as the table-like file will be created.
 
+Supplementary:
+S1. The properties_of_logs.py can be run in order to collect general information about the log (that are numbe rof cycles, alphabet size e.c.)
+S2. graph_results.py used to generate graphs on results
+
 ## Contributors
 
+This code is supported by Anton Yeshchenko (anton.yeshchenko@gmail.com)
 
-The code based on the original repository.
 
-## License
+The code based on the original repository (github.com/verenich/ProcessSequencePrediction)
+
 
 
 
