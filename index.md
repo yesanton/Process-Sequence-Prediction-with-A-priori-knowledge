@@ -23,30 +23,25 @@ Keras (ver: 1.1.2) is used alongside with Tensorflow (ver: 0.12.0-rc0) backend.
 
 In order to use the scripts few steps need to be performed.
 
-0. Before running any inference algorithms you need to run the java service from the LTLCkeckForTraces folder.
+1. Before running any inference algorithms you need to run the java service from the LTLCkeckForTraces folder.
 
-1. The historical log should be converted into the supported format.
+2. The historical log should be converted into the supported format.
 In order to do so, csv file can be processed by the script csv_converter.py.
 Just feed the full csv log, and specify where the case ID, activity ID, and timestamps are.
-
 Put the file in the data folder.
 
-2. In the file shared variables, write the paths to the files you will use.
+3. In the file shared variables, write the paths to the files you will use.
 
-3. In the file experiment_runner.py you can following:
-
-3.1 Use function 'train' to train the model
-
-3.2 Use either of the functions
-
+4. In the file experiment_runner.py you can following:
+4.1 Use function 'train' to train the model
+4.2 Use either of the functions
 _6_evaluate_beseline_SUFFIX_only.runExperiments(logNumber,formula_used)
 _9_cycl_SUFFIX_only.runExperiments(logNumber,formula_used)
 _10_cycl_back_SUFFIX_only.runExperiments(logNumber,formula_used)
 _11_cycl_pro_SUFFIX_only.runExperiments(logNumber,formula_used)
-
 In order to run corresponding algorithms for predictions.
 
-4. Run calculate_accuracy_on_next_event.py file in order to run evaluation of the algorithms.
+5. Run calculate_accuracy_on_next_event.py file in order to run evaluation of the algorithms.
 The results will be displayed in console as well as the table-like file will be created (table_all_results.csv).
 
 Supplementary:
@@ -64,6 +59,6 @@ S3. LTL formulas can be discovered using 'Declare miner' plugin in ProM.
 This code is supported by Anton Yeshchenko (anton.yeshchenko@gmail.com)
 
 
-The code based on the original repository (<a href="github.com/verenich/ProcessSequencePrediction"><em>keras</em></a> )
+The code based on the (<a href="github.com/verenich/ProcessSequencePrediction"><em>original repository</em></a> )
 
 
