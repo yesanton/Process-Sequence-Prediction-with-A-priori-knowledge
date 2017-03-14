@@ -33,8 +33,9 @@ Put the file in the data folder.
 3. In the file shared variables, write the paths to the files you will use.
 
 4. In the file experiment_runner.py you can following:
-4.1 Use function 'train' to train the model
-4.2 Use either of the functions
+- Use function 'train' to train the model
+- Use either of the functions
+
 _6_evaluate_beseline_SUFFIX_only.runExperiments(logNumber,formula_used)
 _9_cycl_SUFFIX_only.runExperiments(logNumber,formula_used)
 _10_cycl_back_SUFFIX_only.runExperiments(logNumber,formula_used)
