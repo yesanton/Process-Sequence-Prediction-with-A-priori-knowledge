@@ -59,6 +59,6 @@ S3. LTL formulas can be discovered using 'Declare miner' plugin in ProM.
 This code is supported by Anton Yeshchenko (anton.yeshchenko@gmail.com)
 
 
-The code based on the (<a href="github.com/verenich/ProcessSequencePrediction"><em>original repository</em></a> )
+The code based on the (<a href="github.com/verenich/ProcessSequencePrediction"><em>original repository</em></a>)
 
 
