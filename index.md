@@ -34,13 +34,12 @@ Put the file in the data folder.
 
 4. In the file experiment_runner.py you can following:
 - Use function 'train' to train the model
-- Use either of the functions
+- In order to run corresponding algorithms for predictions use either of the functions:
 
-_6_evaluate_beseline_SUFFIX_only.runExperiments(logNumber,formula_used)
-_9_cycl_SUFFIX_only.runExperiments(logNumber,formula_used)
-_10_cycl_back_SUFFIX_only.runExperiments(logNumber,formula_used)
-_11_cycl_pro_SUFFIX_only.runExperiments(logNumber,formula_used)
-In order to run corresponding algorithms for predictions.
+  _6_evaluate_beseline_SUFFIX_only.runExperiments(logNumber,formula_used)
+  _9_cycl_SUFFIX_only.runExperiments(logNumber,formula_used)
+  _10_cycl_back_SUFFIX_only.runExperiments(logNumber,formula_used)
+  _11_cycl_pro_SUFFIX_only.runExperiments(logNumber,formula_used)
 
 5. Run calculate_accuracy_on_next_event.py file in order to run evaluation of the algorithms.
 The results will be displayed in console as well as the table-like file will be created (table_all_results.csv).
