@@ -50,6 +50,7 @@ In order to run corresponding algorithms for predictions.
 The results will be displayed in console as well as the table-like file will be created (table_all_results.csv).
 
 Supplementary:
+
 S1. The properties_of_logs.py can be run in order to collect general information about the log (that are numbe rof cycles, alphabet size e.c.)
 
 S2. graph_results.py used to generate graphs on results
@@ -63,6 +64,6 @@ S3. LTL formulas can be discovered using 'Declare miner' plugin in ProM.
 This code is supported by Anton Yeshchenko (anton.yeshchenko@gmail.com)
 
 
-The code based on the original repository (github.com/verenich/ProcessSequencePrediction)
+The code based on the original repository (<a href="github.com/verenich/ProcessSequencePrediction"><em>keras</em></a> )
 
 
