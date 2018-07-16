@@ -1,0 +1,13 @@
+#tensorflow
+sudo apt-get install python3-pip python3-dev
+sudo pip install -U pip
+sudo pip3 install -U tensorflow  # Python 3.n
+pip3 install distance
+
+#keras
+sudo pip3 install keras
+
+#other libs
+pip3 install jellyfish
+pip3 install sklearn
+pip3 install py4j
